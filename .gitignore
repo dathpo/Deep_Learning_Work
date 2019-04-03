@@ -1,3 +1,6 @@
+.svn/
+.directory
+
 # Byte-compiled / optimized / DLL files
 .directory
 __pycache__/
