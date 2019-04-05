@@ -1,8 +1,6 @@
 __author__ = 'Team Alpha'
 
-
-from AnnImplementations.mnist import MNIST
-from AnnImplementations.imdb import IMDb
+from imdb import IMDb
 
 def main():
     """MNIST(

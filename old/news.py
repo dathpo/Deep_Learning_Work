@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# fashion.py
+# news.py
 """
 """
 
@@ -8,7 +8,8 @@
 from sys import exit;
 from argparse import ArgumentParser;
 # EXAMPLE! To be changed it with your implementation.
-from AnnImplementations import mnist
+import mnist
+
 
 def SIGINT_handler( signal,
                     frame
@@ -69,7 +70,8 @@ def check_arguments(arguments):
 
 
 if __name__ == '__main__':
-    from signal import SIGINT, signal, pause
+    from signal import SIGINT, signal
+
     signal( SIGINT,
             SIGINT_handler
             )
