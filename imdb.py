@@ -1,4 +1,7 @@
 from __future__ import absolute_import, division, print_function
+
+__author__ = 'Team Alpha'
+
 import tensorflow as tf
 from tensorflow import keras
 from keras.layers import Dense , Input , LSTM , Embedding, Dropout , Activation, GRU, Flatten
@@ -7,9 +10,6 @@ from keras.models import Model, Sequential
 from keras.layers import Convolution1D
 from keras import initializers, regularizers, constraints, optimizers, layers
 import numpy as np
-
-
-__author__ = 'Team Alpha'
 
 
 class IMDb:
@@ -29,6 +29,7 @@ class IMDb:
         self.select_combination(self.combination)
 
     def select_combination(self, combination):
+        tf.set_random_seed(self.seed)
         if combination == 1:
             self.run_first_combo()
         elif combination == 2:

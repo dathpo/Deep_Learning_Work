@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# AnnImplementations/mnist_2.py
-
 
 __author__ = 'Team Alpha'
-
 
 import tensorflow as tf
 

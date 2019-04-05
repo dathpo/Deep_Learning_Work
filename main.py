@@ -1,6 +1,7 @@
 __author__ = 'Team Alpha'
 
 from imdb import IMDb
+from mnist import MNIST
 
 def main():
     """MNIST(
