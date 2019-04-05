@@ -4,6 +4,7 @@ __author__ = 'Team Alpha'
 
 import tensorflow as tf
 from tensorflow import keras
+from packageinfo import PackageInfo
 from keras.layers import Dense , Input , LSTM , Embedding, Dropout , Activation, GRU, Flatten
 from keras.layers import Bidirectional, GlobalMaxPool1D
 from keras.models import Model, Sequential
@@ -12,21 +13,14 @@ from keras import initializers, regularizers, constraints, optimizers, layers
 import numpy as np
 
 
-class IMDb:
-    def __init__(
-            self,
-            combination,
-            learning_rate,
-            epochs,
-            batches,
-            seed
-    ):
-        self.combination = combination
+class IMDb(PackageInfo):
+    def __init__(self, combination, learning_rate, epochs, batches, seed):
+        PackageInfo.__init__(self)
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.batches = batches
         self.seed = seed
-        self.select_combination(self.combination)
+        self.select_combination(combination)
 
     def select_combination(self, combination):
         tf.set_random_seed(self.seed)
