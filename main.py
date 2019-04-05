@@ -14,10 +14,10 @@ def main():
     """
 
     IMDb(
-        combination=2,
+        combination=1,
         learning_rate=0.05,
-        epochs=60,
-        batches=700,
+        epochs=40,
+        batches=500,
         seed=12345
     )
 
