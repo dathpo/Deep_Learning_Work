@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# mnist.py
+# mnist_2.py
 """
 """
 
@@ -8,7 +8,7 @@
 from sys import exit;
 from argparse import ArgumentParser;
 # EXAMPLE! To be changed it with your implementation.
-from AnnImplementations import MNIST_gradient_descent
+from AnnImplementations import mnist
 
 def SIGINT_handler( signal,
                     frame
@@ -42,10 +42,10 @@ def main(   combination =1,
 
     if int( combination ) == 1:
         # EXAMPLE! To be changed it with your implementation.
-        MNIST_gradient_descent(	learning_rate,
-								epochs,
-								batches
-								);
+        mnist(learning_rate,
+              epochs,
+              batches
+              );
 
     if int( combination ) == 2:
         network_two(    learning_rate,
