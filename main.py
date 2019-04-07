@@ -3,7 +3,6 @@ __author__ = 'Team Alpha'
 from imdb import IMDb
 from mnist import MNIST
 
-
 def main(dataset):
     if dataset == 0:
         MNIST(
@@ -21,7 +20,6 @@ def main(dataset):
             batches=500,
             seed=12345
         )
-
 
 if __name__ == "__main__":
     main(0)
