@@ -15,7 +15,7 @@ def main():
 #    )
 
     IMDb(
-        combination=1,
+        combination=2,
         learning_rate=0.001,
         epochs=40,
         batches=500,

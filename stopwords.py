@@ -7,7 +7,6 @@ Created on Sun Apr  7 13:06:09 2019
 """
 import re
 import nltk
-#nltk.download('stopwords')
 from nltk.corpus import stopwords
 
 stopwords_eng = set(stopwords.words("english"))
@@ -34,21 +33,18 @@ word_index["<UNUSED>"] = 3
 
 reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 
-def decode_review(text):
-    return ' '.join([reverse_word_index.get(i, '?') for i in text])
-
 
 def stopword_removal(data):
     processed_reviews = []
     for review in data:
-        word_review = decode_review(review)
+        word_review = ' '.join([reverse_word_index.get(i, '?') for i in review])
         words = [word for word in word_review.split() if word not in stopwords_eng]
         indexed_words = []
         for w in words:
             index = word_index.get(w)
             indexed_words.append(index)
         processed_reviews.append(indexed_words)
-
-    print(processed_reviews)
+    print(processed_reviews[0])
+    print(train_data[0])
     
-stopword_removal(train_data)
+train_data = stopword_removal(train_data)
