@@ -28,7 +28,7 @@ def run_first_combo(x_train, y_train, x_test, y_test):
     model = Sequential()
     model.add(Conv2D(28, kernel_size=(3, 3), input_shape=(28, 28, 1)))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Flatten())  # Flattening the 2D arrays for fully connected layers
+    model.add(Flatten())
     model.add(Dense({{choice([128, 256, 512, 1024])}}))
     model.add(Activation({{choice(['relu', 'sigmoid'])}}))
     model.add(Dropout({{uniform(0, 1)}}))
@@ -60,8 +60,7 @@ def main():
                                           max_evals=5,
                                           trials=Trials())
     x_train, y_train, x_test, y_test = prepare_data()
-    run_first_combo(x_train, y_train, x_test, y_test)
-    print("Evalutation of best performing model:")
+    print("Evaluation of best performing model:")
     print(best_model.evaluate(x_test, y_test))
     print("Best performing model chosen hyper-parameters:")
     print(best_run)
