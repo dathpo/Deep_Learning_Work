@@ -12,7 +12,6 @@ import numpy as np
 import argparse
 
 
-
 class MNIST(PackageInfo):
     def __init__(self, combination, learning_rate, epochs, batches, seed):
         PackageInfo.__init__(self)
@@ -21,6 +20,7 @@ class MNIST(PackageInfo):
         self.epochs = int(epochs)
         self.batches = int(batches)
         self.seed = int(seed)
+        self.batch_size = 0
         self.select_combination(int(combination))
 
     def select_combination(self, combination):
@@ -34,22 +34,18 @@ class MNIST(PackageInfo):
 
     def prepare_data(self):
         tf.set_random_seed(self.seed)
-        mnist = tf.keras.datasets.mnist
-        (x_train, y_train), (x_test, y_test) = mnist.load_data()
-        x_train = x_train.reshape(x_train.shape[0], 28, 28, 1)
-        x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
-        # Making sure that the values are float so that we can get decimal points after division
-        x_train = x_train.astype('float32')
-        x_test = x_test.astype('float32')
-        # Normalizing the RGB codes by dividing it to the max RGB value.
-        x_train /= 255
-        x_test /= 255
-        print('x_train Shape:', x_train.shape)
-        print('Number of images in x_train:', x_train.shape[0])
-        print('Number of images in x_test:', x_test.shape[0])
-        print()
-        return x_train, y_train, x_test, y_test
+        fashion = tf.keras.datasets.fashion_mnist
+        (x_train, y_train), (x_test, y_test) = fashion.load_data()
+        self.batch_size = int(x_train.shape[0] / self.batches)
 
+        print("train set shape:", x_train.shape)
+        print("Number of images in train set:", x_train.shape[0])
+        print("Number of images in test set:", x_test.shape[0])
+
+        # Normalizing the RGB codes by dividing it to the max RGB value.
+        x_train = x_train.astype('float32') / 255
+        x_test = x_test.astype('float32') / 255
+        return x_train, y_train, x_test, y_test
 
     def run_first_combo(self, x_train, y_train, x_test, y_test):
         model = Sequential()
@@ -96,20 +92,6 @@ class MNIST(PackageInfo):
         ## Adapting the fashion MNIST Tutorial
         ## https://www.tensorflow.org/tutorials/keras/basic_classification
 
-        tf.set_random_seed(self.seed)
-        fashion_mnist = tf.keras.datasets.mnist
-        (train_x, train_y), (test_x, test_y) = fashion_mnist.load_data()
-        batch_size = int(train_x.shape[0] / self.batches)
-
-        print("train set shape:", train_x.shape)
-        print("Number of images in train set:", train_x.shape[0])
-        print("Number of images in test set:", test_x.shape[0])
-
-        # Normalizing the RGB codes by dividing it to the max RGB value.
-        train_x = train_x.astype('float32') / 255
-        test_x = test_x.astype('float32') / 255
-
-
         model = Sequential([
             Flatten(input_shape=(28, 28)),
             Dense(128, activation="relu"),
@@ -138,14 +120,16 @@ class MNIST(PackageInfo):
             #~optimizer="rmsprop",
             #~loss="mse"
 
+        print("bat", self.batch_size)
+
         model.fit(
-            train_x,
-            train_y,
+            x_train,
+            y_train,
             epochs = self.epochs,
-            batch_size = batch_size
+            batch_size = self.batch_size
             )
 
-        test_loss, test_accuracy = model.evaluate(test_x, test_y)
+        test_loss, test_accuracy = model.evaluate(x_test, y_test)
 
         print("Test Accuracy:", test_accuracy)
         print("Test Loss:", test_loss)
