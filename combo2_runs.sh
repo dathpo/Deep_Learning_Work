@@ -20,5 +20,6 @@ unset __conda_setup
 conda activate cs985
 
 
-./main_mnist.py 2 0.001 5 32 12345
-
+#./main_mnist.py 2 0.001 5 32 12345
+#./main_mnist.py 2 0.001 10 60 12345
+./main_mnist.py 2 0.001 20 60 12345
