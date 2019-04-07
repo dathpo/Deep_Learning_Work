@@ -169,22 +169,38 @@ class MNIST(PackageInfo):
             #~loss="sparse_categorical_crossentropy",
             #~metrics=["accuracy"]
             #~)
-        # [ l ]
-        model = Sequential([
-            Flatten(input_shape=(28, 28)),
-            Dense(300, activation="relu"),
-            Dropout(0.3),
-            Dense(200, activation="relu"),
-            Dropout(0.2),
-            Dense(100, activation="relu"),
-            Dropout(0.1),
-            Dense(10, activation="softmax")
-            ])
-        model.compile(
-            optimizer="adam",
-            loss="sparse_categorical_crossentropy",
-            metrics=["accuracy"]
-            )
+        # [ m ]
+        #~model = Sequential([
+            #~Flatten(input_shape=(28, 28)),
+            #~Dense(300, activation="relu"),
+            #~Dropout(0.3),
+            #~Dense(200, activation="relu"),
+            #~Dropout(0.2),
+            #~Dense(100, activation="relu"),
+            #~Dropout(0.1),
+            #~Dense(10, activation="softmax")
+            #~])
+        #~model.compile(
+            #~optimizer="adam",
+            #~loss="sparse_categorical_crossentropy",
+            #~metrics=["accuracy"]
+            #~)
+        # [ n ]
+        #~model = Sequential([
+            #~Flatten(input_shape=(28, 28)),
+            #~Dense(400, activation="relu"),
+            #~Dropout(0.25),
+            #~Dense(300, activation="relu"),
+            #~Dropout(0.2),
+            #~Dense(200, activation="relu"),
+            #~Dropout(0.1),
+            #~Dense(10, activation="softmax")
+            #~])
+        #~model.compile(
+            #~optimizer="adam",
+            #~loss="sparse_categorical_crossentropy",
+            #~metrics=["accuracy"]
+            #~)
 
         ## ALTERNATIVELY
         #~model = Sequential()
