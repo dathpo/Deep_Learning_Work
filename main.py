@@ -6,7 +6,7 @@ from mnist import MNIST
 def main(dataset):
     if dataset == 0:
         MNIST(
-            combination=1,
+            combination=2,
             learning_rate=0.01,
             epochs=5,
             batches=32,
