@@ -71,20 +71,11 @@ class IMDb(PackageInfo):
         
         model = Sequential()
 
-        # First layer gets integer-encoded vocab and gets embedding vector for each word-index
         model.add(Embedding(vocab_size, 16))
-
         model.add(Bidirectional(GRU(32, return_sequences = True)))
-        # # Pooling layer returns a fixed-length output vector for each example by averaging over sequence dimension.
         model.add(GlobalMaxPool1D())
-        # model.add(keras.layers.Dense(16, activation=tf.nn.relu))
-        #
-
-        # Fixed length output vector is piped through a fully-connected (dense) layer with 16 nodes
         model.add(Dense(20, activation=tf.nn.relu))
-        # model.add(Dense(16, activation=tf.nn.relu))
         model.add(Dropout(0.05))
-        # Last dense layer connected with a single output node with sigmoid activation function giving float between 0 and 1
         model.add(Dense(1, activation=tf.nn.sigmoid))
 
         model.summary()
