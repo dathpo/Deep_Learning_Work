@@ -58,8 +58,7 @@ class IMDb(PackageInfo):
 
         #def decode_review(text):
          #   return ' '.join([reverse_word_index.get(i, '?') for i in text])
-    
-    
+            
     
         train_data = keras.preprocessing.sequence.pad_sequences(train_data,
                                                             value=word_index['<PAD>'],
@@ -118,7 +117,7 @@ class IMDb(PackageInfo):
         model = keras.Sequential()
 
         # First layer gets integer-encoded vocab and gets embedding vector for each word-index
-        model.add(keras.layers.Embedding(vocab_size, 16))
+        model.add(keras.layers.Embedding(self.vocab_size, 16))
         #
         # # Pooling layer returns a fixed-length output vector for each example by averaging over sequence dimension.
         # # model.add(GlobalMaxPool1D())
