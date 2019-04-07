@@ -12,7 +12,9 @@ from keras.layers import Convolution1D
 from keras.models import Model, Sequential
 from keras.optimizers import SGD
 from keras import initializers, regularizers, constraints, optimizers, layers
-
+import re
+import nltk
+from nltk.corpus import stopwords
 
 class IMDb(PackageInfo):
     vocab_size = 10000
@@ -34,14 +36,18 @@ class IMDb(PackageInfo):
         else:
             print("Please input 1 or 2 for the combination to run")
 
-    def run_first_combo(self, train_data, train_labels, test_data, test_labels):
-        """
-        First combination with LSTM RNN here
-        """
-        c1_model = self.build_c1_model(train_data, train_labels)
-        self.test_c1_model(c1_model, test_data, test_labels)
         
     def prepare_data(self):
+        
+        stopwords_eng = set(stopwords.words("english"))
+        stopwords_eng.remove('no')
+        stopwords_eng.remove('not')
+        stopwords_eng.remove("shouldn't")
+        stopwords_eng.remove("wasn't")
+        stopwords_eng.remove("weren't")
+        stopwords_eng.remove("wouldn't")
+        stopwords_eng.remove("won't")
+        
         imdb = keras.datasets.imdb
         (train_data, train_labels), (test_data, test_labels) = imdb.load_data(num_words=self.vocab_size)
     
@@ -56,10 +62,23 @@ class IMDb(PackageInfo):
 
         reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 
-        #def decode_review(text):
-         #   return ' '.join([reverse_word_index.get(i, '?') for i in text])
+        def stopword_removal(data):
+            processed_reviews = []
+            for review in data:
+                word_review = ' '.join([reverse_word_index.get(i, '?') for i in review])
+                words = [word for word in word_review.split() if word not in stopwords_eng]
+                indexed_words = []
+                for w in words:
+                    index = word_index.get(w)
+                    indexed_words.append(index)
+                processed_reviews.append(indexed_words)
+                
+            return(processed_reviews)
     
-    
+        train_data = stopword_removal(train_data)
+        
+        test_data = stopword_removal(test_data)
+                    
     
         train_data = keras.preprocessing.sequence.pad_sequences(train_data,
                                                             value=word_index['<PAD>'],
@@ -72,11 +91,18 @@ class IMDb(PackageInfo):
                                                            maxlen=256)
         
         return train_data, train_labels, test_data, test_labels
+    
+    def run_first_combo(self, train_data, train_labels, test_data, test_labels):
+        """
+        First combination with LSTM RNN here
+        """
+        c1_model = self.build_c1_model(train_data, train_labels)
+        self.test_c1_model(c1_model, test_data, test_labels)    
         
     def build_c1_model(self, train_data, train_labels):
         model = Sequential()
         model.add(Embedding(self.vocab_size, 16))
-        model.add(Bidirectional(GRU(32, return_sequences = True)))
+        model.add(Bidirectional(LSTM(32, return_sequences = True)))
         model.add(GlobalMaxPool1D())
         model.add(Dense(20, activation=tf.nn.relu))
         model.add(Dropout(0.05))
@@ -88,7 +114,7 @@ class IMDb(PackageInfo):
 
         # Binary cross-entropy loss function suited to binary classification
         
-#            opt = SGD(lr=self.learning_rate)
+        opt = SGD(lr=self.learning_rate)
         
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
@@ -114,24 +140,15 @@ class IMDb(PackageInfo):
         print(results)
 
     def run_second_combo(self, train_data, train_labels, test_data, test_labels):
-        # Layers will be stacked sequentially
+        c2_model = self.build_c2_model(train_data, train_labels)
+        self.test_c2_model(c2_model, test_data, test_labels)
+        
+    def build_c2_model(self, train_data, train_labels):
+        
         model = keras.Sequential()
-
-        # First layer gets integer-encoded vocab and gets embedding vector for each word-index
-        model.add(keras.layers.Embedding(vocab_size, 16))
-        #
-        # # Pooling layer returns a fixed-length output vector for each example by averaging over sequence dimension.
-        # # model.add(GlobalMaxPool1D())
+        model.add(keras.layers.Embedding(self.vocab_size, 16))
         model.add(keras.layers.GlobalAveragePooling1D())
-        # model.add(keras.layers.Dense(16, activation=tf.nn.relu))
-        #
-        # model.add(keras.layers.Dropout(0.5))
-
-        # Fixed length output vector is piped through a fully-connected (dense) layer with 16 nodes
         model.add(keras.layers.Dense(16, activation=tf.nn.relu))
-        # model.add(Dense(16, activation=tf.nn.relu))
-        # model.add(keras.layers.Dropout(0.5))
-        # Last dense layer connected with a single output node with sigmoid activation function giving float between 0 and 1
         model.add(keras.layers.Dense(1, activation=tf.nn.sigmoid))
 
         model.summary()
@@ -158,16 +175,9 @@ class IMDb(PackageInfo):
                             batch_size=self.batches,
                             validation_data=(x_val, y_val),
                             verbose=1)
+        
+        return model
 
+    def test_c2_model(self, model, test_data, test_labels):
         results = model.evaluate(test_data, test_labels)
-
         print(results)
-
-        # import re
-        # from nltk.stem import WordNetLemmatizer
-        # from ntlk.corpus import stopwords
-        #
-        # stop_words = set(stopwords.words('english'))
-        # lemmatizer = WordNetLemmatizer()
-        #
-        # def clean_
