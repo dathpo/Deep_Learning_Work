@@ -5,171 +5,159 @@ __author__ = 'Team Alpha'
 
 from packageinfo import PackageInfo
 import tensorflow as tf
+import keras
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D
+from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, Activation
+import numpy as np
+import argparse
+
 
 
 class MNIST(PackageInfo):
     def __init__(self, combination, learning_rate, epochs, batches, seed):
         PackageInfo.__init__(self)
-        self.combination = combination
-        self.learning_rate = learning_rate
-        self.epochs = epochs
-        self.batches = batches
-        self.seed = seed
-        self.prepare_data()
+        self.combination = int(combination)
+        self.learning_rate = float(learning_rate)
+        self.epochs = int(epochs)
+        self.batches = int(batches)
+        self.seed = int(seed)
+        self.select_combination(int(combination))
+
+    def select_combination(self, combination):
+        x_train, y_train, x_test, y_test = self.prepare_data()
+        if combination == 1:
+            self.run_first_combo(x_train, y_train, x_test, y_test)
+        elif combination == 2:
+            self.run_second_combo(x_train, y_train, x_test, y_test)
+        else:
+            raise Exception("Please input 1 or 2 for the combination to run")
 
     def prepare_data(self):
         tf.set_random_seed(self.seed)
         mnist = tf.keras.datasets.mnist
-        if self.combination == 1:
-            self.run_first_combo(mnist)
-        elif self.combination == 2:
-            self.run_second_combo(mnist)
-        else:
-            print("Please input 1 or 2 for the combination to run")
-
-    def run_first_combo(self, mnist):
-
-        # Implemented following [1]
-
-        # !!! NEED TO HANDLE GRACEFULLY WHEN NO DATASET IS PASSED TO THE FUNCTION.
-
-        # Optimization varibales
-        # epochs = 1000
-        # learning_rate = 0.01
-
-        # Function's environment variables
         (x_train, y_train), (x_test, y_test) = mnist.load_data()
         x_train = x_train.reshape(x_train.shape[0], 28, 28, 1)
         x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
-        input_shape = (28, 28, 1)
         # Making sure that the values are float so that we can get decimal points after division
         x_train = x_train.astype('float32')
         x_test = x_test.astype('float32')
         # Normalizing the RGB codes by dividing it to the max RGB value.
         x_train /= 255
         x_test /= 255
-        print('x_train shape:', x_train.shape)
-        print('Number of images in x_train', x_train.shape[0])
-        print('Number of images in x_test', x_test.shape[0])
+        print('x_train Shape:', x_train.shape)
+        print('Number of images in x_train:', x_train.shape[0])
+        print('Number of images in x_test:', x_test.shape[0])
+        print()
+        return x_train, y_train, x_test, y_test
 
-        print("Shape:", x_train.shape)
 
-        """model = tf.keras.models.Sequential([
-            tf.keras.layers.Flatten(input_shape=(28, 28)),
-            tf.keras.layers.Dense(512, activation=tf.nn.relu),
-            tf.keras.layers.Dropout(0.2),
-            tf.keras.layers.Dense(10, activation=tf.nn.softmax)
-        ])"""
-
+    def run_first_combo(self, x_train, y_train, x_test, y_test):
         model = Sequential()
-        model.add(Conv2D(28, kernel_size=(3, 3), input_shape=input_shape))
+        model.add(Conv2D(28, kernel_size=(3, 3), input_shape=(28, 28, 1)))
         model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Flatten())  # Flattening the 2D arrays for fully connected layers
-        model.add(Dense(128, activation=tf.nn.relu))
+        model.add(Flatten())
+        model.add(Dense(128))
+        model.add(Activation('relu'))
         model.add(Dropout(0.2))
-        model.add(Dense(10, activation=tf.nn.softmax))
+        model.add(Dense(10))
+        model.add(Activation('softmax'))
+        model.summary()
 
-        model.compile(optimizer='adam',
-                      loss='sparse_categorical_crossentropy',
-                      metrics=['accuracy'])
+        h = 0
 
-        model.fit(x_train, y_train, epochs=5)
-        print(model.evaluate(x_test, y_test))
+        adam = keras.optimizers.Adam(lr=self.learning_rate)          # default lr=0.001
+        sgd = keras.optimizers.SGD(lr=self.learning_rate)            # default lr=0.01
 
-        """
-        update_interval = int(epochs / 5)
-        batch_size = int(len(mnist.train.labels) / batches)
-        # Extracting the dimensions of the problem' space.
-        m, n = x_train.data.shape
+        tbCallBack = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
+                                                 write_graph=True, write_images=True)
+        tbCallBack.set_model(model)
 
-        # Populating the TensorFlow environment
-        # Creating the constants
-        x = tf.constant(    x_train,
-                            dtype = tf.float32,
-                            name = "x"
-                            )
-        y = tf.constant(    x_train,
-                            dtype = tf.float32,
-                            name = "y"
-                            )
+        model.compile(loss='sparse_categorical_crossentropy',
+                      metrics=['accuracy'],
+                      optimizer=sgd)
 
-        ## Creating the variables
-        theta = tf.Variable(    tf.random_uniform(  [n, 1],
-                                                    -1.0,
-                                                    1.0
-                                                    ),
-                                name="theta"
-                                )
+        result = model.fit(x_train, y_train,
+                           batch_size=self.batches,
+                           epochs=self.epochs,
+                           verbose=2,
+                           validation_split=0.1,
+                           callbacks=[tbCallBack])
 
-        ## Creating the optimizer
-        ## calculated using tfs gradient descent optimizer
-        #~optimizer = tf.train.GradientDescentOptimizer(learning_rate = learning_rate);
+        model.save_weights("fashion_c1.ckpt")
+        model.save('fashion_c1.h5')
 
-        ## calculated using tfs momentum descent optimizer - faster
-        optimizer = tf.train.MomentumOptimizer( learning_rate = learning_rate,
-                                                momentum = 0.9
-                                                )
+        validation_acc = np.amax(result.history['val_acc'])
+        print('Best validation acc of epoch:', validation_acc)
+        test_loss, test_accuracy = model.evaluate(x_test, y_test)
+        print("Test Loss:", test_loss)
+        print("Test Accuracy:", test_accuracy)
 
-        ## Creating the operations
-        y_pred = tf.matmul(
-            x,
-            theta,
-            name="predictions"
-        )
-        error = y_pred - y
-        mse = tf.reduce_mean(tf.square(error),
-                             name="mse"
-                             )
-        training_op = optimizer.minimize(mse)
+    def run_second_combo(self, x_train, y_train, x_test, y_test):
+        ## Adapting the fashion MNIST Tutorial
+        ## https://www.tensorflow.org/tutorials/keras/basic_classification
 
-        ## Initializing the TensorFlow environment
-        init = tf.global_variables_initializer()
+        tf.set_random_seed(self.seed)
+        fashion_mnist = tf.keras.datasets.mnist
+        (train_x, train_y), (test_x, test_y) = fashion_mnist.load_data()
+        batch_size = int(train_x.shape[0] / self.batches)
 
-        ## Running the operations between the variables using a TensorFlow.Session.
-        ## Class Session: returns TensorFlow operations
-        ## A Session object encapsulates the environment in which Operation objects
-        ## are executed, and Tensor objects are evaluated.
-        ## Note: using the context manager "with", it is not necessary to release
-        ## the sessions resources when no longer required (using tf.Session.close).
-        with tf.Session() as sess:
-            ## Completing variables and graph structure initialization.
-            sess.run(init)
-            ## For the requested amount of times (epochs = iterations) train the ANN.
-            for epoch in range(epochs):
-                avg_cost = 0
-                for batch in range(batch_size):
-                    batch_x, batch_y = mnist.train.next_batch(batch_size = batch_size)
-                    _, cost = sess.run([optimizer, cross_entropy],
-                                    feed_dict = {x: batch_x, y: batch_y})
-                    avg_cost += cost / batches
-                print("Epoch:", (epoch + 1), "cost =", "{:.3f}".format(avg_cost))
+        print("train set shape:", train_x.shape)
+        print("Number of images in train set:", train_x.shape[0])
+        print("Number of images in test set:", test_x.shape[0])
 
-                ## At regular interval, including iteration 0, print a status update
-                ## on the achieved effectiveness of the training (the value of the
-                ## cost function).
-                if epoch % update_interval == 0:
-                    print(  "Epoch ",
-                            epoch,
-                            " MSE = ",
-                            mse.eval()
-                            )
-                    ## Compute the output of the graph (run the operations); i.e.
-                    ## train the ANN.
-                    sess.run(training_op)
-            ## Compute and print the final value of the wheights (is thatwhat theta
-            ## is?) obtained at the end of the training session (the epochs).
-            best_theta = theta.eval()
-            print(best_theta)
+        # Normalizing the RGB codes by dividing it to the max RGB value.
+        train_x = train_x.astype('float32') / 255
+        test_x = test_x.astype('float32') / 255
 
-            print(sess.run(accuracy, feed_dict={x: mnist.test.images, y: mnist.test.labels}))
-            """
 
-    def run_second_combo(self, mnist):
+        model = Sequential([
+            Flatten(input_shape=(28, 28)),
+            Dense(128, activation="relu"),
+            Dense(128, activation="relu"),
+            Dense(10, activation="softmax")
+            ])
+        # alternatively
+        #~model = Sequential()
+        #~model.add(Dense(128, input_shape=(784,), activation="relu"))
+        #~model.add(Dense(128, input_shape=(784,), activation="relu"))
+        #~model.add(10, input_shape=(784,), activation="softmax"))
+
+        model.compile(
+            optimizer="adam",
+            loss="sparse_categorical_crossentropy",
+            metrics=["accuracy"]
+            )
+        ## ALTERNATIVELY
+        #~# For a multi-class classification problem
+            #~optimizer="rmsprop",
+            #~loss="categorical_crossentropy",
+        #~# For a binary classification problem
+            #~optimizer="rmsprop",
+            #~loss="binary_crossentropy",
+        #~# For a mean squared error regression problem
+            #~optimizer="rmsprop",
+            #~loss="mse"
+
+        model.fit(
+            train_x,
+            train_y,
+            epochs = self.epochs,
+            batch_size = batch_size
+            )
+
+        test_loss, test_accuracy = model.evaluate(test_x, test_y)
+
+        print("Test Accuracy:", test_accuracy)
+        print("Test Loss:", test_loss)
+
         return 0
 
-
-# [ References ]
-# [1] Python TensorFlow Tutorial – Build a Neural Network
-#   - https://adventuresinmachinelearning.com/python-tensorflow-tutorial/
+if __name__ == "__main__":
+    arg_parser = argparse.ArgumentParser(description="Assignment Program")
+    arg_parser.add_argument("combination", help="Flag to indicate which network to run")
+    arg_parser.add_argument("learning_rate", help="Learning Rate parameter")
+    arg_parser.add_argument("epochs", help="Number of iterations to perform")
+    arg_parser.add_argument("batches", help="Number of batches to use")
+    arg_parser.add_argument("seed", help="Seed to initialize the network")
+    args = arg_parser.parse_args()
+    MNIST(args.combination, args.learning_rate, args.epochs, args.batches, args.seed)

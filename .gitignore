@@ -1,3 +1,6 @@
+Graph/
+*.h5
+*.ckpt
 *.save
 *.tmp
 *.swp

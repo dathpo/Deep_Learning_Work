@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# news.py
+# mnist.py
 """
 """
+__author__ = "Team Alpha"
+
 
 #import os
 from sys import exit;
 from argparse import ArgumentParser;
-# EXAMPLE! To be changed it with your implementation.
-import mnist
+
+from mnist import MNIST
 
 
 def SIGINT_handler( signal,
@@ -18,11 +20,11 @@ def SIGINT_handler( signal,
     exit(2);
 
 
-def main(   combination =1,
-            learning_rate = 0.01,
-            epochs = 100,
-            batches = 100,
-            seed = 42
+def main(   combination = 1,
+            learning_rate = 0.001,
+            epochs = 5,
+            batches = 32,
+            seed = 12345
             ):
     """
     @param combination: Indicates which ANN architecture to run.
@@ -37,30 +39,18 @@ def main(   combination =1,
     @type seed: Integer.
     @return: TBD
     """
-
-    # Set Seed
-    print( "Seed: {}".format( seed ) );
-
-    if int( combination ) == 1:
-        # EXAMPLE! To be changed it with your implementation.
-        mnist(learning_rate,
-              epochs,
-              batches
-              );
-
-    if int( combination ) == 2:
-        network_two(    learning_rate,
-                        epochs,
-                        batches
-                        );
-
-    print( "Done!" );
-
+    MNIST(
+        combination = combination,
+        learning_rate = learning_rate,
+        epochs = epochs,
+        batches = batches,
+        seed = seed
+        )
 
 def check_arguments(arguments):
 # Check the validity of all arguments and exit if any is invalid
     quit = False;
-    for argument, value in vars( arguments ).iteritems() :
+    for argument, value in vars( arguments ).items() :
         try:
             float(value);
         except:
@@ -70,8 +60,7 @@ def check_arguments(arguments):
 
 
 if __name__ == '__main__':
-    from signal import SIGINT, signal
-
+    from signal import SIGINT, signal, pause
     signal( SIGINT,
             SIGINT_handler
             )
@@ -102,3 +91,5 @@ if __name__ == '__main__':
                     seed = arguments.seed
                     )
             );
+
+## EOF
