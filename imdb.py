@@ -100,21 +100,13 @@ class IMDb(Helper):
     def build_c1_model(self, train_data, train_labels):
         model = Sequential()
                
-        model.add(Embedding(self.vocab_size, 150, input_length=512))
-#        model.add(Dropout(0.2))
-#        model.add(Activation('relu'))
+        model.add(Embedding(self.vocab_size, 250, input_length=512))
         model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
-#        model.add(Flatten())
         model.add(Dense(400, activation='relu'))
-#        model.add(Dropout(0.2))
-#        model.add(Activation('relu'))
-
         model.add(Dense(1, activation='sigmoid'))
         model.summary()
-        
-#        opt = SGD(lr=self.learning_rate)
-        
+                
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
                       metrics=['acc'])
@@ -137,33 +129,9 @@ class IMDb(Helper):
         
         tbcallback.set_model(model)
         
-        import matplotlib.pyplot as plt
-        history_dict = performance.history
-        history_dict.keys()
-        acc = history_dict['acc']
-        val_acc = history_dict['val_acc']
-        loss = history_dict['loss']
-        val_loss = history_dict['val_loss']
-        
-        epochs = range(1, len(acc) + 1)
-        
-        plt.plot(epochs, loss, 'bo', label='Training loss')
-        plt.plot(epochs, val_loss, 'b', label='Validation loss')
-        plt.title('Training and validation loss')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
-        plt.legend()       
-        plt.show()
-        
-        plt.clf()   
-        
-        plt.plot(epochs, acc, 'bo', label='Training acc')
-        plt.plot(epochs, val_acc, 'b', label='Validation acc')
-        plt.title('Training and validation accuracy')
-        plt.xlabel('Epochs')
-        plt.ylabel('Accuracy')
-        plt.legend()      
-        plt.show()
+        Helper.plot_loss_acc(self, performance.epoch, performance.history['loss'],
+                             performance.history['acc'],
+                              performance.history['val_loss'], performance.history['val_acc'])
         return model
             
     def test_c1_model(self, model, test_data, test_labels):
@@ -212,33 +180,10 @@ class IMDb(Helper):
 
         tbcallback.set_model(model)
         
-        import matplotlib.pyplot as plt
-        history_dict = performance.history
-        history_dict.keys()
-        acc = history_dict['acc']
-        val_acc = history_dict['val_acc']
-        loss = history_dict['loss']
-        val_loss = history_dict['val_loss']
-        
-        epochs = range(1, len(acc) + 1)
-        
-        plt.plot(epochs, loss, 'bo', label='Training loss')
-        plt.plot(epochs, val_loss, 'b', label='Validation loss')
-        plt.title('Training and validation loss')
-        plt.xlabel('Epochs')
-        plt.ylabel('Loss')
-        plt.legend()       
-        plt.show()
-        
-        plt.clf()   
-        
-        plt.plot(epochs, acc, 'bo', label='Training acc')
-        plt.plot(epochs, val_acc, 'b', label='Validation acc')
-        plt.title('Training and validation accuracy')
-        plt.xlabel('Epochs')
-        plt.ylabel('Accuracy')
-        plt.legend()      
-        plt.show()
+        Helper.plot_loss_acc(self, performance.epoch, performance.history['loss'],
+                              performance.history['acc'],
+                              performance.history['val_loss'],
+                              performance.history['val_acc'])
         return model
 
     def test_c2_model(self, model, test_data, test_labels):

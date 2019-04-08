@@ -17,8 +17,8 @@ def main(dataset):
         IMDb(
             combination=1,
             learning_rate=0.04,
-            epochs=3,
-            batches=400,
+            epochs=2,
+            batches=350,
             seed=12345
         )
 
