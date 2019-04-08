@@ -9,8 +9,8 @@ def main(dataset):
         MNIST(
             combination=1,
             learning_rate=0.001,
-            epochs=5,
-            batches=32,
+            epochs=40,
+            batches=250,
             seed=12345
         )
     elif dataset == 1:

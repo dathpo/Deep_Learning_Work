@@ -23,7 +23,7 @@ class MNIST(PackageInfo):
         self.batch_size = 0
         self.num_classes = 0
         self.input_shape = (0, 0, 0)
-        self.run_combination(int(combination))
+        self.run_combination(self.combination)
 
     def run_combination(self, combination):
         x_train, y_train, x_test, y_test = self.prepare_data()
@@ -39,7 +39,7 @@ class MNIST(PackageInfo):
         tf.set_random_seed(self.seed)
         fashion = tf.keras.datasets.fashion_mnist
         (x_train, y_train), (x_test, y_test) = fashion.load_data()
-        self.batch_size = int(x_train.shape[0] / self.batches)
+        """self.batch_size = int(x_train.shape[0] / self.batches)
 
         print("train set shape:", x_train.shape)
         print("Number of images in train set:", x_train.shape[0])
@@ -47,8 +47,43 @@ class MNIST(PackageInfo):
 
         # Normalizing the RGB codes by dividing it to the max RGB value.
         x_train = x_train.astype('float32') / 255
-        x_test = x_test.astype('float32') / 255
+        x_test = x_test.astype('float32') / 255"""
+
+        print("Training set shape:", x_train.shape)
+        print("Number of images in Training set:", x_train.shape[0])
+        print("Number of images in Test set:", x_test.shape[0])
+
+        x_train = np.array(x_train, dtype=np.uint8)
+        x_test = np.array(x_test, dtype=np.uint8)
+        y_train = np.array(y_train, dtype=np.uint8)
+        y_test = np.array(y_test, dtype=np.uint8)
+
+        x_train.reshape(x_train.shape[0], 28, 28, 1)
+        x_test.reshape(x_test.shape[0], 28, 28, 1)
+
+        if self.combination == 1:
+            x_train = np.expand_dims(x_train, axis=-1)
+            x_test = np.expand_dims(x_test, axis=-1)
+
+        y_train = keras.utils.np_utils.to_categorical(y_train, 10)
+        y_test = keras.utils.np_utils.to_categorical(y_test, 10)
+
+        x_train = x_train.astype('float32')
+        x_test = x_test.astype('float32')
+
+        x_train /= 255
+        x_test /= 255
+
         return x_train, y_train, x_test, y_test
+
+    def shape(self, data, target):
+        data = np.array(data, dtype=np.uint8)
+        target = np.array(target, dtype=np.uint8)
+        data = data.reshape(data.shape[0], 28, 28, 1)
+        target = keras.utils.np_utils.to_categorical(target, 10)
+        data = data.astype('float32')
+        data /= 255
+        return data, target
 
     def run_first_combo(self, x_train, y_train, x_test, y_test):
         model = Sequential()
