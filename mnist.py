@@ -89,120 +89,65 @@ class MNIST(PackageInfo):
         print("Test Accuracy:", test_accuracy)
 
     def run_second_combo(self, x_train, y_train, x_test, y_test):
-        ## Adapting the fashion MNIST Tutorial
-        ## https://www.tensorflow.org/tutorials/keras/basic_classification
-        # [ f ]
-        #~model = Sequential([
-            #~Flatten(input_shape=(28, 28)),
-            #~Dense(32, activation="relu"),
-            #~Dense(10, activation="softmax")
-            #~])
-        #~model.compile(
-            #~optimizer="adam",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
+        ## Configurations
+        # [ f (BEST) ]
+        model = Sequential([
+            Flatten(input_shape=(28, 28)),
+            Dense(500, activation="relu"),
+            Dropout(0.20),
+            Dense(400, activation="relu"),
+            Dropout(0.25),
+            Dense(300, activation="relu"),
+            Dropout(0.30),
+            Dense(200, activation="relu"),
+            Dropout(0.35),
+            Dense(10, activation="softmax")
+            ])
         # [ g ]
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
+            #~Dense(256, activation="relu"),
+            #~Dropout(0.2),
             #~Dense(128, activation="relu"),
-            #~Dense(128, activation="relu"),
+            #~Dropout(0.1),
+            #~Dense(64, activation="relu"),
             #~Dense(10, activation="softmax")
             #~])
-        #~model.compile(
-            #~optimizer="adam",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
-        # [ h ]
+       # [ h ]
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
             #~Dense(128, activation="relu"),
             #~Dense(128, activation="relu"),
-            #~Dense(128, activation="relu"),
             #~Dense(10, activation="softmax")
             #~])
-        #~model.compile(
-            #~optimizer="adam",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
+
+
+        model.compile(
+            optimizer="adam",
+            loss="sparse_categorical_crossentropy",
+            metrics=["accuracy"]
+            )
+
+
         # [ i ]
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
-            #~Dense(256, activation="relu"),
-            #~Dense(128, activation="relu"),
             #~Dense(64, activation="relu"),
             #~Dense(10, activation="softmax")
             #~])
-        #~model.compile(
-            #~optimizer="adam",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
-        # [ l ]
+        # [ j (WORST ]
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
-            #~Dense(256, activation="relu"),
-            #~Dropout(0.2),
-            #~Dense(128, activation="relu"),
-            #~Dropout(0.1),
-            #~Dense(64, activation="relu"),
+            #~Dense(32, activation="sigmoid"),
             #~Dense(10, activation="softmax")
             #~])
+
         #~model.compile(
-            #~optimizer="adam",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
-        # [ m ]
-        #~model = Sequential([
-            #~Flatten(input_shape=(28, 28)),
-            #~Dense(300, activation="relu"),
-            #~Dropout(0.3),
-            #~Dense(200, activation="relu"),
-            #~Dropout(0.2),
-            #~Dense(100, activation="relu"),
-            #~Dropout(0.1),
-            #~Dense(10, activation="softmax")
-            #~])
-        #~model.compile(
-            #~optimizer="adam",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
-        # [ n ]
-        #~model = Sequential([
-            #~Flatten(input_shape=(28, 28)),
-            #~Dense(400, activation="relu"),
-            #~Dropout(0.25),
-            #~Dense(300, activation="relu"),
-            #~Dropout(0.2),
-            #~Dense(200, activation="relu"),
-            #~Dropout(0.1),
-            #~Dense(10, activation="softmax")
-            #~])
-        #~model.compile(
-            #~optimizer="adam",
+            #~optimizer="SGD",
             #~loss="sparse_categorical_crossentropy",
             #~metrics=["accuracy"]
             #~)
 
-        ## ALTERNATIVELY
-        #~model = Sequential()
-        #~model.add(Dense(128, input_shape=(784,), activation="relu"))
-        #~model.add(Dense(128, input_shape=(784,), activation="relu"))
-        #~model.add(10, input_shape=(784,), activation="softmax"))
-        #
-        #~# For a multi-class classification problem
-            #~optimizer="rmsprop",
-            #~loss="categorical_crossentropy",
-        #~# For a binary classification problem
-            #~optimizer="rmsprop",
-            #~loss="binary_crossentropy",
-        #~# For a mean squared error regression problem
-            #~optimizer="rmsprop",
-            #~loss="mse"
 
         print("bat", self.batch_size)
 
