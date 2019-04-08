@@ -4,36 +4,44 @@ __author__ = 'Team Alpha'
 
 import tensorflow as tf
 from tensorflow import keras
-from helper import Helper
-from keras.layers import Dense , Input , LSTM , Embedding, Dropout , Activation, GRU, Flatten
+from helper import Helper, arg_parser
+from keras.layers import Dense, Input, LSTM, Embedding, Dropout, Activation, GRU, Flatten
 from keras.layers import MaxPooling1D
 from keras.layers import Conv1D, GlobalMaxPooling1D
 from keras.models import Sequential
 from keras.optimizers import SGD
 from nltk.corpus import stopwords
 
+
 class IMDb(Helper):
     vocab_size = 20000
+
     def __init__(self, combination, learning_rate, epochs, batches, seed):
         Helper.__init__(self)
-        self.learning_rate = learning_rate
-        self.epochs = epochs
-        self.batches = batches
-        self.seed = seed
-        self.select_combination(combination)
+        self.combination = int(combination)
+        self.learning_rate = float(learning_rate)
+        self.epochs = int(epochs)
+        self.batches = int(batches)
+        self.seed = int(seed)
+        self.select_combination(self.combination)
 
     def select_combination(self, combination):
-        tf.set_random_seed(self.seed)
         train_data, train_labels, test_data, test_labels = self.prepare_data()
         if combination == 1:
-            self.run_first_combo(train_data, train_labels, test_data, test_labels)
+            model = self.run_first_combo()
+            modelname = "imdb_c1_x_y_z"
         elif combination == 2:
-            self.run_second_combo(train_data, train_labels, test_data, test_labels)
+            model = self.run_second_combo()
+            modelname = "imdb_c2_x_y_z"
         else:
-            print("Please input 1 or 2 for the combination to run")
+            raise Exception("Please input 1 or 2 for the combination to run")
+        data = train_data, train_labels, test_data, test_labels
+        result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs)
+        Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
+                             result.history['val_loss'], result.history['val_acc'], modelname)
         
     def prepare_data(self):
-        
+        tf.set_random_seed(self.seed)
         stopwords_eng = set(stopwords.words("english"))
         stopwords_eng.remove('no')
         stopwords_eng.remove('not')
@@ -55,7 +63,6 @@ class IMDb(Helper):
         (train_data, train_labels), (test_data, test_labels) = imdb.load_data(num_words=self.vocab_size)
     
         # A dictionary mapping words to an integer index
-
         word_index = imdb.get_word_index()
         word_index = {k:(v+3) for k,v in word_index.items()}
         word_index["<PAD>"] = 0
@@ -75,7 +82,7 @@ class IMDb(Helper):
                     index = word_index.get(w)
                     indexed_words.append(index)
                 processed_reviews.append(indexed_words)
-                
+
             return(processed_reviews)
     
         clean_train_data = stopword_removal(train_data)
@@ -92,57 +99,23 @@ class IMDb(Helper):
                                                            maxlen=512)
         
         return train_data, train_labels, test_data, test_labels
-    
-    def run_first_combo(self, train_data, train_labels, test_data, test_labels):
-        c1_model = self.build_c1_model(train_data, train_labels)
-        self.test_c1_model(c1_model, test_data, test_labels)    
         
-    def build_c1_model(self, train_data, train_labels):
+    def run_first_combo(self):
         model = Sequential()
-               
+
         model.add(Embedding(self.vocab_size, 250, input_length=512))
         model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
         model.add(Dense(400, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
-        model.summary()
-                
+
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
                       metrics=['acc'])
-
-        # During training, want to check accuracy of model on data it's not seen before. Validation.
-
-        x_train = train_data
-        y_train = train_labels
-        
-        tbcallback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
-                            write_graph=True, write_images=True)
-        
-        performance = model.fit(x_train,
-                      y_train,
-                      epochs=self.epochs,
-                      batch_size=self.batches,
-                      validation_split=0.10,
-                      verbose=1,
-                      callbacks=[tbcallback])
-        
-        tbcallback.set_model(model)
-        
-        Helper.plot_loss_acc(self, performance.epoch, performance.history['loss'],
-                             performance.history['acc'],
-                              performance.history['val_loss'], performance.history['val_acc'])
+        model.summary()
         return model
-            
-    def test_c1_model(self, model, test_data, test_labels):
-        results = model.evaluate(test_data, test_labels)
-        print(results)
-
-    def run_second_combo(self, train_data, train_labels, test_data, test_labels):
-        c2_model = self.build_c2_model(train_data, train_labels)
-        self.test_c2_model(c2_model, test_data, test_labels)
         
-    def build_c2_model(self, train_data, train_labels):
+    def run_second_combo(self):
         model = Sequential()
 #        model.add(Embedding(self.vocab_size, 32, input_length=256))
 #        model.add(Flatten())
@@ -156,36 +129,14 @@ class IMDb(Helper):
 #        model.add(Flatten())
 #        model.add(Dense(16, activation=tf.nn.relu))
         model.add(Dense(1, activation=tf.nn.sigmoid))
-        model.summary()
-        
+
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
                       metrics=['acc'])
-        
-        # During training, want to check accuracy of model on data it's not seen before. Validation.
-
-        x_train = train_data
-        y_train = train_labels
-
-        tbcallback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
-                                                 write_graph=True, write_images=True)
-
-        performance = model.fit(x_train,
-                      y_train,
-                      epochs=self.epochs,
-                      batch_size=self.batches,
-                      validation_split=0.10,
-                      verbose=1,
-                      callbacks=[tbcallback])
-
-        tbcallback.set_model(model)
-        
-        Helper.plot_loss_acc(self, performance.epoch, performance.history['loss'],
-                              performance.history['acc'],
-                              performance.history['val_loss'],
-                              performance.history['val_acc'])
+        model.summary()
         return model
 
-    def test_c2_model(self, model, test_data, test_labels):
-        results = model.evaluate(test_data, test_labels)
-        print(results)
+
+if __name__ == "__main__":
+    args = arg_parser()
+    IMDb(args.combination, args.learning_rate, args.epochs, args.batches, args.seed)
