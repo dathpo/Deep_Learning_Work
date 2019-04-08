@@ -7,7 +7,7 @@ from tensorflow import keras
 from helper import Helper
 from keras.layers import Dense , Input , LSTM , Embedding, Dropout , Activation, GRU, Flatten
 from keras.layers import MaxPooling1D
-from keras.layers import Conv1D
+from keras.layers import Conv1D, GlobalMaxPooling1D
 from keras.models import Sequential
 from keras.optimizers import SGD
 from nltk.corpus import stopwords
@@ -99,19 +99,17 @@ class IMDb(Helper):
         
     def build_c1_model(self, train_data, train_labels):
         model = Sequential()
-        
-#        model.add(Embedding(self.vocab_size, 16))
-#        model.add(Bidirectional(LSTM(32, return_sequences = True)))
-#        model.add(GlobalMaxPool1D())
-#        model.add(Dense(20, activation=tf.nn.relu))
-#        model.add(Dropout(0.05))
-#        model.add(Dense(1, activation=tf.nn.sigmoid))
-        
+               
         model.add(Embedding(self.vocab_size, 150, input_length=512))
-        model.add(Conv1D(filters=150, kernel_size=3, padding='same', activation='relu'))
-        model.add(MaxPooling1D(pool_size=512))
-        model.add(Flatten())
+#        model.add(Dropout(0.2))
+#        model.add(Activation('relu'))
+        model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))
+        model.add(GlobalMaxPooling1D())
+#        model.add(Flatten())
         model.add(Dense(400, activation='relu'))
+#        model.add(Dropout(0.2))
+#        model.add(Activation('relu'))
+
         model.add(Dense(1, activation='sigmoid'))
         model.summary()
         
@@ -201,12 +199,18 @@ class IMDb(Helper):
         x_train = train_data
         y_train = train_labels
 
+        tbcallback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
+                                                 write_graph=True, write_images=True)
+
         performance = model.fit(x_train,
                       y_train,
                       epochs=self.epochs,
                       batch_size=self.batches,
                       validation_split=0.10,
-                      verbose=1)
+                      verbose=1,
+                      callbacks=[tbcallback])
+
+        tbcallback.set_model(model)
         
         import matplotlib.pyplot as plt
         history_dict = performance.history

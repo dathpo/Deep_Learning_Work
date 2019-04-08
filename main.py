@@ -15,10 +15,10 @@ def main(dataset):
         )
     elif dataset == 1:
         IMDb(
-            combination=2,
+            combination=1,
             learning_rate=0.04,
-            epochs=5,
-            batches=50,
+            epochs=3,
+            batches=400,
             seed=12345
         )
 
