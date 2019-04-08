@@ -42,7 +42,15 @@ class IMDb(Helper):
         stopwords_eng.remove("weren't")
         stopwords_eng.remove("wouldn't")
         stopwords_eng.remove("won't")
-        
+        stopwords_eng.remove("but")
+        stopwords_eng.remove("aren't")
+        stopwords_eng.remove("aren")
+        stopwords_eng.remove("couldn")
+        stopwords_eng.remove("couldn't")
+        stopwords_eng.remove("didn")
+        stopwords_eng.remove("didn't")
+        stopwords_eng.remove("very")
+
         imdb = keras.datasets.imdb
         (train_data, train_labels), (test_data, test_labels) = imdb.load_data(num_words=self.vocab_size)
     
@@ -99,15 +107,15 @@ class IMDb(Helper):
 #        model.add(Dropout(0.05))
 #        model.add(Dense(1, activation=tf.nn.sigmoid))
         
-        model.add(Embedding(self.vocab_size, 65, input_length=512))
-        model.add(Conv1D(filters=65, kernel_size=3, padding='same', activation='relu'))
+        model.add(Embedding(self.vocab_size, 150, input_length=512))
+        model.add(Conv1D(filters=150, kernel_size=3, padding='same', activation='relu'))
         model.add(MaxPooling1D(pool_size=512))
         model.add(Flatten())
         model.add(Dense(400, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
         model.summary()
         
-        opt = SGD(lr=self.learning_rate)
+#        opt = SGD(lr=self.learning_rate)
         
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
@@ -115,21 +123,19 @@ class IMDb(Helper):
 
         # During training, want to check accuracy of model on data it's not seen before. Validation.
 
-        x_val = train_data[:10000]
-        partial_x_train = train_data[10000:]   
-        y_val = train_labels[:10000]
-        partial_y_train = train_labels[10000:]
+        x_train = train_data
+        y_train = train_labels
         
         tbcallback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
                             write_graph=True, write_images=True)
         
-        performance = model.fit(partial_x_train,
-                  partial_y_train,
-                  epochs=self.epochs,
-                  batch_size=self.batches,
-                  validation_data=(x_val, y_val),
-                  verbose=1,
-                  callbacks=[tbcallback])
+        performance = model.fit(x_train,
+                      y_train,
+                      epochs=self.epochs,
+                      batch_size=self.batches,
+                      validation_split=0.10,
+                      verbose=1,
+                      callbacks=[tbcallback])
         
         tbcallback.set_model(model)
         
@@ -172,9 +178,17 @@ class IMDb(Helper):
         
     def build_c2_model(self, train_data, train_labels):
         model = Sequential()
-        model.add(Embedding(self.vocab_size, 32, input_length=256))
-        model.add(Flatten())
-        model.add(Dense(250, activation=tf.nn.relu))
+#        model.add(Embedding(self.vocab_size, 32, input_length=256))
+#        model.add(Flatten())
+#        model.add(Dense(250, activation=tf.nn.relu))
+#        model.add(Dense(1, activation=tf.nn.sigmoid))
+#        model.summary()
+        
+        model.add(Embedding(self.vocab_size, 128))
+        model.add(LSTM(128, dropout=0.02, recurrent_dropout=0.02))
+#        model.add(MaxPooling1D(pool_size=512))
+#        model.add(Flatten())
+#        model.add(Dense(16, activation=tf.nn.relu))
         model.add(Dense(1, activation=tf.nn.sigmoid))
         model.summary()
         
@@ -184,18 +198,15 @@ class IMDb(Helper):
         
         # During training, want to check accuracy of model on data it's not seen before. Validation.
 
-        x_val = train_data[:10000]
-        partial_x_train = train_data[10000:]
+        x_train = train_data
+        y_train = train_labels
 
-        y_val = train_labels[:10000]
-        partial_y_train = train_labels[10000:]
-
-        performance = model.fit(partial_x_train,
-                  partial_y_train,
-                  epochs=self.epochs,
-                  batch_size=self.batches,
-                  validation_data=(x_val, y_val),
-                  verbose=1)
+        performance = model.fit(x_train,
+                      y_train,
+                      epochs=self.epochs,
+                      batch_size=self.batches,
+                      validation_split=0.10,
+                      verbose=1)
         
         import matplotlib.pyplot as plt
         history_dict = performance.history
