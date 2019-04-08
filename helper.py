@@ -7,25 +7,28 @@ import keras
 import matplotlib.pyplot as plt
 import os
 from keras.callbacks import CSVLogger
+from keras.models import load_model
 import numpy as np
 import argparse
 from signal import SIGINT, signal
 import seaborn as sns; sns.set()
+import nltk
 
 
 class Helper:
     def __init__(self):
         print("TensorFlow version:\t\t%s" % tf.__version__)
         print("Keras version:\t\t\t%s" % keras.__version__)
+        print("NLTK version:\t\t\t%s" % nltk.__version__)
         print("Python version:\t\t\t%s" % sys.version)
         print()
 
-    def fit_and_evaluate(self, model, data, batches, epochs):
+    def fit_and_evaluate(self, model, data, batches, epochs, filename):
         x_train, y_train, x_test, y_test = data
         tb_callback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
                                                   write_graph=True, write_images=True)
         tb_callback.set_model(model)
-        csv_logger = CSVLogger('training.log', separator=',', append=False)
+        csv_logger = CSVLogger(filename=filename+".log", separator=',', append=False)
         result = model.fit(x_train, y_train,
                            batch_size=batches,
                            epochs=epochs,
@@ -33,14 +36,16 @@ class Helper:
                            validation_split=0.1,
                            callbacks=[tb_callback, csv_logger])
 
-        model.save_weights("fashion_c1.ckpt")
-        model.save('fashion_c1.h5')
-        # model.load_weights('fashion_c1.h5')
+        model.save_weights(filename + ".ckpt")
+        model.save(filename + ".h5")
+        # model.load_weights(filename + ".ckpt")                     # .h5 also works
+        # model = load_model(filename + ".h5")
 
         validation_acc = np.amax(result.history['val_acc'])
-        print('Best validation acc of epoch:', validation_acc)
+        print('\nBest Validation Accuracy:', validation_acc)
+        print()
         test_loss, test_accuracy = model.evaluate(x_test, y_test)
-        print("Test Loss:", test_loss)
+        print("\nTest Loss:", test_loss)
         print("Test Accuracy:", test_accuracy)
         return result
 
