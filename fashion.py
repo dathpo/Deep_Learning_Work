@@ -9,6 +9,7 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, BatchNormalization
 import numpy as np
+import random as rand
 
 
 class Fashion(Helper):
@@ -40,6 +41,7 @@ class Fashion(Helper):
                              result.history['val_loss'], result.history['val_acc'], modelname)
 
     def prepare_data(self):
+        rand.seed(self.seed)
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
         fashion = tf.keras.datasets.fashion_mnist
