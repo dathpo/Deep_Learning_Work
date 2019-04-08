@@ -1,12 +1,12 @@
 __author__ = 'Team Alpha'
 
 from imdb import IMDb
-from mnist import MNIST
+from fashion import Fashion
 
 
 def main(dataset):
     if dataset == 0:
-        MNIST(
+        Fashion(
             combination=1,
             learning_rate=0.001,
             epochs=40,
@@ -24,4 +24,4 @@ def main(dataset):
 
 
 if __name__ == "__main__":
-    main(1)
+    main(0)
