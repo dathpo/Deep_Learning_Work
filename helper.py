@@ -6,16 +6,44 @@ import tensorflow as tf
 import keras
 import matplotlib.pyplot as plt
 import os
+from keras.callbacks import CSVLogger
+import numpy as np
+import argparse
+from signal import SIGINT, signal
 
 
-class Helper():
+class Helper:
     def __init__(self):
         print("TensorFlow version:\t\t%s" % tf.__version__)
         print("Keras version:\t\t\t%s" % keras.__version__)
         print("Python version:\t\t\t%s" % sys.version)
         print()
 
-    def plot_loss_acc(self, epochs, loss, acc, val_loss, val_acc):
+    def fit_and_evaluate(self, model, data, batches, epochs):
+        x_train, y_train, x_test, y_test = data
+        tb_callback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
+                                                  write_graph=True, write_images=True)
+        tb_callback.set_model(model)
+        csv_logger = CSVLogger('training.log', separator=',', append=False)
+        result = model.fit(x_train, y_train,
+                           batch_size=batches,
+                           epochs=epochs,
+                           verbose=2,
+                           validation_split=0.1,
+                           callbacks=[tb_callback, csv_logger])
+
+        model.save_weights("fashion_c1.ckpt")
+        model.save('fashion_c1.h5')
+        # model.load_weights('fashion_c1.h5')
+
+        validation_acc = np.amax(result.history['val_acc'])
+        print('Best validation acc of epoch:', validation_acc)
+        test_loss, test_accuracy = model.evaluate(x_test, y_test)
+        print("Test Loss:", test_loss)
+        print("Test Accuracy:", test_accuracy)
+        return result
+
+    def plot_loss_acc(self, epochs, loss, acc, val_loss, val_acc, filename):
         fig, (ax_loss, ax_acc) = plt.subplots(1, 2, figsize=(10, 4))
         ax_loss.plot(epochs, loss, label="Train Loss", c="blue")
         ax_loss.plot(epochs, val_loss, label="Validation Loss", c="red")
@@ -28,6 +56,36 @@ class Helper():
         ax_acc.set_xlabel('epoch')
         ax_acc.legend(loc='best')
         pwd = os.path.abspath(os.path.dirname(__file__))
-        filename = 'model'
         graph_path = os.path.join(pwd, '{}'.format(filename + '.pdf'))
         fig.savefig(graph_path, bbox_inches="tight")
+
+
+def arg_parser():
+    signal(SIGINT, SIGINT_handler)
+    arg_parser = argparse.ArgumentParser(description="Assignment Program")
+    arg_parser.add_argument("combination", help="Flag to indicate which network to run")
+    arg_parser.add_argument("learning_rate", help="Learning Rate parameter")
+    arg_parser.add_argument("epochs", help="Number of iterations to perform")
+    arg_parser.add_argument("batches", help="Number of batches to use")
+    arg_parser.add_argument("seed", help="Seed to initialize the network")
+    args = arg_parser.parse_args()
+    check_arguments(args)
+    return args
+
+
+def check_arguments(arguments):
+    # Check the validity of all arguments and exit if any is invalid
+    quit = False
+    for argument, value in vars(arguments).items():
+        try:
+            float(value)
+        except:
+            print("{} must be numeric".format(argument))
+            quit = True
+    if quit:
+        exit(1)
+
+
+def SIGINT_handler(signal, frame):
+    # ISR to handle the Ctrl-C combination and stop the program in a clean way.
+    exit(2)
