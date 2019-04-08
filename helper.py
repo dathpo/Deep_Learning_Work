@@ -23,7 +23,7 @@ class Helper:
         print("Python version:\t\t\t%s" % sys.version)
         print()
 
-    def fit_and_evaluate(self, model, data, batches, epochs, seed, filename):
+    def fit_and_evaluate(self, model, data, batches, epochs, filename):
         x_train, y_train, x_test, y_test = data
         tb_callback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
                                                   write_graph=True, write_images=True)

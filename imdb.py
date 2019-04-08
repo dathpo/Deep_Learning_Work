@@ -15,6 +15,7 @@ from nltk.corpus import stopwords
 
 class IMDb(Helper):
     vocab_size = 5000
+    max_len = 512
 
     def __init__(self, combination, learning_rate, epochs, batches, seed):
         Helper.__init__(self)
@@ -114,12 +115,11 @@ class IMDb(Helper):
     def run_second_combo(self):
         
         model = Sequential()
-        model.add(Embedding(self.vocab_size, 150, input_length=512))
+        model.add(Embedding(self.vocab_size, 150, input_length=self.max_len))
         model.add(Flatten())
         model.add(Dense(250, activation=tf.nn.relu))
         model.add(Dense(1, activation=tf.nn.sigmoid))
-        model.summary()
-     
+
 #        model.add(Embedding(self.vocab_size, 128))
 #        model.add(LSTM(128, dropout=0.02, recurrent_dropout=0.02))
 ##        model.add(MaxPooling1D(pool_size=512))

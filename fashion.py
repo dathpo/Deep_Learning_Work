@@ -7,7 +7,7 @@ from helper import Helper, arg_parser
 import tensorflow as tf
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, BatchNormalization
+from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, BatchNormalization, Activation
 import numpy as np
 import random as rand
 
@@ -36,7 +36,7 @@ class Fashion(Helper):
         else:
             raise Exception("Please input 1 or 2 for the combination to run")
         data = x_train, y_train, x_test, y_test
-        result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, self.seed, modelname)
+        result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, modelname)
         Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
                              result.history['val_loss'], result.history['val_acc'], modelname)
 
@@ -72,20 +72,42 @@ class Fashion(Helper):
     def run_first_combo(self):
         self.input_shape = (28, 28, 1)
         self.num_classes = 10
-        model = Sequential()
+        """model = Sequential()
         model.add(BatchNormalization(input_shape=self.input_shape))                 # Normalisation
         model.add(Conv2D(64, (4, 4), padding='same', activation='relu'))            # Convolution
         model.add(MaxPooling2D(pool_size=(2, 2)))                                   # Max Pooling
-        #model.add(Dropout(0.1))                                                     # Dropout
-        #model.add(Conv2D(64, (4, 4), activation='relu'))                            # Convolution
-        #model.add(MaxPooling2D(pool_size=(2, 2)))                                   # Max Pooling
-        #model.add(Dropout(0.3))                                                     # Dropout
+        model.add(Dropout(0.1))                                                     # Dropout
+        model.add(Conv2D(64, (4, 4), activation='relu'))                            # Convolution
+        model.add(MaxPooling2D(pool_size=(2, 2)))                                   # Max Pooling
+        model.add(Dropout(0.3))                                                     # Dropout
         model.add(Flatten())                                                        # Converting 3D feat. to 1D feat.
-        #model.add(Dense(256, activation='relu'))                                    # Fully Connected Layer
-        #model.add(Dropout(0.5))                                                     # Dropout
-        #model.add(Dense(64, activation='relu'))                                     # Fully Connected Layer
-        #model.add(BatchNormalization())                                             # Normalization
-        model.add(Dense(self.num_classes, activation='softmax'))
+        model.add(Dense(256, activation='relu'))                                    # Fully Connected Layer
+        model.add(Dropout(0.5))                                                     # Dropout
+        model.add(Dense(64, activation='relu'))                                     # Fully Connected Layer
+        model.add(BatchNormalization())                                             # Normalization
+        model.add(Dense(self.num_classes, activation='softmax'))"""
+
+        model = Sequential()
+        model.add(Conv2D(64, kernel_size=(3, 3), strides=(1, 1)))
+        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9, fix_gamma=False))
+        model.add(Activation(activation='relu'))
+        model.add(MaxPooling2D(size=(2, 2), strides=(2, 2), padding=(0, 0), ceil_mode=False))
+        model.add(Dropout(p=0.3))
+        model.add(Conv2D(64, kernel_size=(3, 3), stride=(1, 1)))
+        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9, fix_gamma=False))
+        model.add(Activation(activation='relu'))
+        model.add(MaxPooling2D(size=(2, 2), strides=(2, 2), padding=(0, 0), ceil_mode=False))
+        model.add(Dropout(p=0.3))
+        model.add(Flatten)
+        model.add(Dense(256, activation='linear'))
+        model.add(BatchNormalization(axis=1, eps=1e-05, momentum=0.9, fix_gamma=False))
+        model.add(Activation(activation='relu'))
+        model.add(Dropout(p=0.3))
+        model.add(Dense(64, activation='linear'))
+        model.add(BatchNormalization(axis=1, eps=1e-05, momentum=0.9, fix_gamma=False))
+        model.add(Activation(activation='relu'))
+        model.add(Dropout(p=0.3))
+        model.add(Dense(10, activation="linear"))
 
         adam = keras.optimizers.Adam(lr=self.learning_rate)                         # default lr=0.001
         sgd = keras.optimizers.SGD(lr=self.learning_rate)                           # default lr=0.01
