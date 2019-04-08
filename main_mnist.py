@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# mnist.py
+# fashion.py
 """
 """
 __author__ = "Team Alpha"
@@ -10,7 +10,7 @@ __author__ = "Team Alpha"
 from sys import exit;
 from argparse import ArgumentParser;
 
-from mnist import MNIST
+from fashion import Fashion
 
 
 def SIGINT_handler( signal,
@@ -39,7 +39,7 @@ def main(   combination = 1,
     @type seed: Integer.
     @return: TBD
     """
-    MNIST(
+    Fashion(
         combination = combination,
         learning_rate = learning_rate,
         epochs = epochs,
