@@ -96,18 +96,18 @@ class Fashion(Helper):
     def run_second_combo(self):
         ## Configurations
         # [ f (BEST) ]
-        #~model = Sequential([
-            #~Flatten(input_shape=(28, 28)),
-            #~Dense(500, activation="relu"),
-            #~Dropout(0.20),
-            #~Dense(400, activation="relu"),
-            #~Dropout(0.25),
-            #~Dense(300, activation="relu"),
-            #~Dropout(0.30),
-            #~Dense(200, activation="relu"),
-            #~Dropout(0.35),
-            #~Dense(10, activation="softmax")
-            #~])
+        model = Sequential([
+            Flatten(input_shape=(28, 28)),
+            Dense(500, activation="relu"),
+            Dropout(0.20),
+            Dense(400, activation="relu"),
+            Dropout(0.25),
+            Dense(300, activation="relu"),
+            Dropout(0.30),
+            Dense(200, activation="relu"),
+            Dropout(0.35),
+            Dense(10, activation="softmax")
+            ])
         # [ g ]
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
@@ -127,11 +127,11 @@ class Fashion(Helper):
             #~])
 
         # Optimizer for the three best models
-        #~model.compile(
-            #~optimizer="adam",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
+        model.compile(
+            optimizer="adam",
+            loss="sparse_categorical_crossentropy",
+            metrics=["accuracy"]
+            )
 
         # [ i ]
         #~model = Sequential([
@@ -140,18 +140,20 @@ class Fashion(Helper):
             #~Dense(10, activation="softmax")
             #~])
         # [ j (WORST ]
-        model = Sequential([
-            Flatten(input_shape=(28, 28)),
-            Dense(32, activation="sigmoid"),
-            Dense(10, activation="softmax")
-            ])
+        #~model = Sequential([
+            #~Flatten(input_shape=(28, 28)),
+            #~Dense(32, activation="sigmoid"),
+            #~Dense(10, activation="softmax")
+            #~])
 
         # Optimizer for the two worst models
-        model.compile(
-            optimizer="SGD",
-            loss="sparse_categorical_crossentropy",
-            metrics=["accuracy"]
-            )
+        #~model.compile(
+            #~optimizer="SGD",
+            #~loss="sparse_categorical_crossentropy",
+            #~metrics=["accuracy"]
+            #~)
+
+
         model.summary()
         return model
 
