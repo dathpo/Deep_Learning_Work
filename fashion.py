@@ -56,9 +56,10 @@ class Fashion(Helper):
         if self.combination == 1:
             x_train = np.expand_dims(x_train, axis=-1)
             x_test = np.expand_dims(x_test, axis=-1)
+            y_train = keras.utils.np_utils.to_categorical(y_train, 10)
+            y_test = keras.utils.np_utils.to_categorical(y_test, 10)
 
-        y_train = keras.utils.np_utils.to_categorical(y_train, 10)
-        y_test = keras.utils.np_utils.to_categorical(y_test, 10)
+        # Normalizing the RGB codes by dividing it to the max RGB value.
         x_train = x_train.astype('float32')
         x_test = x_test.astype('float32')
         x_train /= 255
@@ -151,7 +152,7 @@ class Fashion(Helper):
             loss="sparse_categorical_crossentropy",
             metrics=["accuracy"]
             )
-
+        model.summary()
         return model
 
 
