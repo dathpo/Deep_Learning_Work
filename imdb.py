@@ -89,13 +89,9 @@ class IMDb(Helper):
         clean_test_data = stopword_removal(test_data)
                     
         train_data = keras.preprocessing.sequence.pad_sequences(clean_train_data,
-                                                            value=word_index['<PAD>'],
-                                                            padding='post',
                                                             maxlen=512)
 
         test_data = keras.preprocessing.sequence.pad_sequences(clean_test_data,
-                                                           value=word_index["<PAD>"],
-                                                           padding='post',
                                                            maxlen=512)
         
         return train_data, train_labels, test_data, test_labels
@@ -118,7 +114,7 @@ class IMDb(Helper):
     def run_second_combo(self):
         
         model = Sequential()
-        model.add(Embedding(self.vocab_size, 100, input_length=512))
+        model.add(Embedding(self.vocab_size, 150, input_length=512))
         model.add(Flatten())
         model.add(Dense(250, activation=tf.nn.relu))
         model.add(Dense(1, activation=tf.nn.sigmoid))
