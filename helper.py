@@ -29,7 +29,7 @@ class Helper:
         result = model.fit(x_train, y_train,
                            batch_size=batches,
                            epochs=epochs,
-                           verbose=2,
+                           verbose=1,
                            validation_split=0.1,
                            callbacks=[tb_callback, csv_logger])
 
