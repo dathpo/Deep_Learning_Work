@@ -35,11 +35,12 @@ class Fashion(Helper):
         else:
             raise Exception("Please input 1 or 2 for the combination to run")
         data = x_train, y_train, x_test, y_test
-        result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, modelname)
+        result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, self.seed, modelname)
         Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
                              result.history['val_loss'], result.history['val_acc'], modelname)
 
     def prepare_data(self):
+        np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
         fashion = tf.keras.datasets.fashion_mnist
         (x_train, y_train), (x_test, y_test) = fashion.load_data()
