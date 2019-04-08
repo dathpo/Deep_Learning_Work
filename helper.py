@@ -10,6 +10,7 @@ from keras.callbacks import CSVLogger
 import numpy as np
 import argparse
 from signal import SIGINT, signal
+import seaborn as sns; sns.set()
 
 
 class Helper:
@@ -74,7 +75,9 @@ def arg_parser():
 
 
 def check_arguments(arguments):
-    # Check the validity of all arguments and exit if any is invalid
+    """
+    Check the validity of all arguments and exit if any is invalid
+    """
     quit = False
     for argument, value in vars(arguments).items():
         try:
@@ -87,5 +90,7 @@ def check_arguments(arguments):
 
 
 def SIGINT_handler(signal, frame):
-    # ISR to handle the Ctrl-C combination and stop the program in a clean way.
+    """
+    ISR to handle the Ctrl-C combination and stop the program in a clean way
+    """
     exit(2)

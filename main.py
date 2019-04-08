@@ -9,7 +9,7 @@ def main(dataset):
         Fashion(
             combination=1,
             learning_rate=0.001,
-            epochs=40,
+            epochs=5,
             batches=250,
             seed=12345
         )

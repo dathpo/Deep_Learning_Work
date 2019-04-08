@@ -7,9 +7,8 @@ from helper import Helper, arg_parser
 import tensorflow as tf
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, Activation, InputLayer, Convolution2D, BatchNormalization
+from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, BatchNormalization
 import numpy as np
-import seaborn as sns; sns.set()
 
 
 class Fashion(Helper):
@@ -54,8 +53,8 @@ class Fashion(Helper):
         y_train = np.array(y_train, dtype=np.uint8)
         y_test = np.array(y_test, dtype=np.uint8)
 
-        x_train.reshape(x_train.shape[0], 28, 28, 1)
-        x_test.reshape(x_test.shape[0], 28, 28, 1)
+        # x_train.reshape(x_train.shape[0], 28, 28, 1)
+        # x_test.reshape(x_test.shape[0], 28, 28, 1)
 
         if self.combination == 1:
             x_train = np.expand_dims(x_train, axis=-1)
@@ -76,14 +75,14 @@ class Fashion(Helper):
         self.input_shape = (28, 28, 1)
         self.num_classes = 10
         model = Sequential()
-        model.add(BatchNormalization(input_shape=self.input_shape))                                             # Normalisation
+        model.add(BatchNormalization(input_shape=self.input_shape))                 # Normalisation
         model.add(Conv2D(64, (4, 4), padding='same', activation='relu'))            # Convolution
         model.add(MaxPooling2D(pool_size=(2, 2)))                                   # Max Pooling
         model.add(Dropout(0.1))                                                     # Dropout
         model.add(Conv2D(64, (4, 4), activation='relu'))                            # Convolution
         model.add(MaxPooling2D(pool_size=(2, 2)))                                   # Max Pooling
         model.add(Dropout(0.3))                                                     # Dropout
-        model.add(Flatten())                                                        # Converting 3D feature to 1D feature vector
+        model.add(Flatten())                                                        # Converting 3D feat. to 1D feat.
         model.add(Dense(256, activation='relu'))                                    # Fully Connected Layer
         model.add(Dropout(0.5))                                                     # Dropout
         model.add(Dense(64, activation='relu'))                                     # Fully Connected Layer
