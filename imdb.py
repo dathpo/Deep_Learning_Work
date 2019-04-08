@@ -100,10 +100,13 @@ class IMDb(Helper):
     def run_first_combo(self):
         model = Sequential()
 
-        model.add(Embedding(self.vocab_size, 250, input_length=512))
-        model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))
+        model.add(Embedding(self.vocab_size, 1, input_length=self.maxlen))
+        model.add(Conv1D(filters=1, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
+#        model.add(Conv1D(filters=100, kernel_size=3, padding='same', activation='relu'))
+#        model.add(GlobalMaxPooling1D())
         model.add(Dense(400, activation='relu'))
+#        model.add(Dense(200, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
 
         model.compile(optimizer='adam',
@@ -115,9 +118,12 @@ class IMDb(Helper):
     def run_second_combo(self):
         
         model = Sequential()
-        model.add(Embedding(self.vocab_size, 150, input_length=self.max_len))
+        model.add(Embedding(self.vocab_size, 100, input_length=self.maxlen))
         model.add(Flatten())
         model.add(Dense(250, activation=tf.nn.relu))
+        model.add(Dense(100, activation=tf.nn.relu))
+        model.add(Dense(50, activation=tf.nn.relu))
+        model.add(Dense(50, activation=tf.nn.relu))
         model.add(Dense(1, activation=tf.nn.sigmoid))
 
 #        model.add(Embedding(self.vocab_size, 128))
@@ -132,7 +138,6 @@ class IMDb(Helper):
                       metrics=['acc'])
         model.summary()
         return model
-
 
 if __name__ == "__main__":
     args = arg_parser()
