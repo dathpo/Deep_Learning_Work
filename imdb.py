@@ -4,7 +4,7 @@ __author__ = 'Team Alpha'
 
 import tensorflow as tf
 from tensorflow import keras
-from packageinfo import PackageInfo
+from helper import Helper
 from keras.layers import Dense , Input , LSTM , Embedding, Dropout , Activation, GRU, Flatten
 from keras.layers import MaxPooling1D
 from keras.layers import Conv1D
@@ -12,10 +12,10 @@ from keras.models import Sequential
 from keras.optimizers import SGD
 from nltk.corpus import stopwords
 
-class IMDb(PackageInfo):
+class IMDb(Helper):
     vocab_size = 20000
     def __init__(self, combination, learning_rate, epochs, batches, seed):
-        PackageInfo.__init__(self)
+        Helper.__init__(self)
         self.learning_rate = learning_rate
         self.epochs = epochs
         self.batches = batches

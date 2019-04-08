@@ -5,6 +5,7 @@ Graph/
 *.tmp
 *.swp
 *.gz
+*.pdf
 .svn/
 .directory
 

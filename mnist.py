@@ -3,18 +3,22 @@
 
 __author__ = 'Team Alpha'
 
-from packageinfo import PackageInfo
+from helper import Helper
 import tensorflow as tf
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, Activation, InputLayer, Convolution2D, BatchNormalization
+from keras.callbacks import CSVLogger
 import numpy as np
 import argparse
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set()
+import os
 
 
-class MNIST(PackageInfo):
+class MNIST(Helper):
     def __init__(self, combination, learning_rate, epochs, batches, seed):
-        PackageInfo.__init__(self)
+        Helper.__init__(self)
         self.combination = int(combination)
         self.learning_rate = float(learning_rate)
         self.epochs = int(epochs)
@@ -75,15 +79,6 @@ class MNIST(PackageInfo):
         x_test /= 255
 
         return x_train, y_train, x_test, y_test
-
-    def shape(self, data, target):
-        data = np.array(data, dtype=np.uint8)
-        target = np.array(target, dtype=np.uint8)
-        data = data.reshape(data.shape[0], 28, 28, 1)
-        target = keras.utils.np_utils.to_categorical(target, 10)
-        data = data.astype('float32')
-        data /= 255
-        return data, target
 
     def run_first_combo(self, x_train, y_train, x_test, y_test):
         model = Sequential()
@@ -254,22 +249,55 @@ class MNIST(PackageInfo):
         tb_callback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
                                                   write_graph=True, write_images=True)
         tb_callback.set_model(model)
-
-        result = model.fit(x_train, y_train,
+        csv_logger = CSVLogger('training.log', separator=',', append=False)
+        """result = model.fit(x_train, y_train,
                            batch_size=self.batches,
                            epochs=self.epochs,
                            verbose=2,
                            validation_split=0.1,
-                           callbacks=[tb_callback])
+                           callbacks=[tb_callback, csv_logger])
 
         model.save_weights("fashion_c1.ckpt")
-        model.save('fashion_c1.h5')
+        model.save('fashion_c1.h5')"""
+        model.load_weights('fashion_c1.h5')
 
-        validation_acc = np.amax(result.history['val_acc'])
-        print('Best validation acc of epoch:', validation_acc)
+        # validation_acc = np.amax(result.history['val_acc'])
+        # print('Best validation acc of epoch:', validation_acc)
         test_loss, test_accuracy = model.evaluate(x_test, y_test)
         print("Test Loss:", test_loss)
         print("Test Accuracy:", test_accuracy)
+        train_loss = [0.6487, 0.3869, 0.3327, 0.3049, 0.2841, 0.2653, 0.2532, 0.2433, 0.2323, 0.2249, 0.2152, 0.2115,
+                      0.2036,
+                      0.1994, 0.1913, 0.1859, 0.1845, 0.1802, 0.1740, 0.1715, 0.1686, 0.1600, 0.1583, 0.1585, 0.1533,
+                      0.1524,
+                      0.1497, 0.1449, 0.1437, 0.1397, 0.1387, 0.1354, 0.1335, 0.1317, 0.1297, 0.1281, 0.1276, 0.1293,
+                      0.1266,
+                      0.1206]
+        train_acc = [0.7707, 0.8587, 0.8799, 0.8882, 0.8953, 0.9014, 0.9054, 0.9092, 0.9145, 0.9163, 0.9208, 0.9207,
+                     0.9248,
+                     0.9250, 0.9277, 0.9303, 0.9303, 0.9312, 0.9340, 0.9355, 0.9360, 0.9410, 0.9396, 0.9408, 0.9426,
+                     0.9433,
+                     0.9429, 0.9454, 0.9473, 0.9479, 0.9479, 0.9483, 0.9491, 0.9504, 0.9512, 0.9517, 0.9523, 0.9512,
+                     0.9520,
+                     0.9545]
+        val_loss = [0.3639, 0.2947, 0.2769, 0.2612, 0.2455, 0.2348, 0.2312, 0.2364, 0.2231, 0.2149, 0.2118, 0.2130,
+                    0.2404,
+                    0.2056, 0.2107, 0.2267, 0.2065, 0.2029, 0.2107, 0.2072, 0.2044, 0.1980, 0.1997, 0.2057, 0.2188,
+                    0.2036,
+                    0.2004, 0.2041, 0.2036, 0.2010, 0.2088, 0.2089, 0.2118, 0.2081, 0.2018, 0.2105, 0.2097, 0.2103,
+                    0.2057,
+                    0.2070]
+        val_acc = [0.8665, 0.8880, 0.8970, 0.9022, 0.9072, 0.9118, 0.9138, 0.9155, 0.9187, 0.9205, 0.9220, 0.9218,
+                   0.9148,
+                   0.9243, 0.9223, 0.9213, 0.9223, 0.9252, 0.9208, 0.9262, 0.9265, 0.9260, 0.9260, 0.9282, 0.9215,
+                   0.9278,
+                   0.9273, 0.9270, 0.9265, 0.9278, 0.9285, 0.9263, 0.9223, 0.9263, 0.9263, 0.9278, 0.9302, 0.9262,
+                   0.9302,
+                   0.9293]
+        e = range(1, 41)
+        return Helper.plot_loss_acc(self, e, train_loss, train_acc, val_loss, val_acc)
+        #return self.plot_loss_acc(result.epoch, result.history['loss'], result.history['acc'],
+         #                     result.history['val_loss'], result.history['val_acc'])
 
 
 if __name__ == "__main__":
