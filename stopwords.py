@@ -17,6 +17,16 @@ stopwords_eng.remove("wasn't")
 stopwords_eng.remove("weren't")
 stopwords_eng.remove("wouldn't")
 stopwords_eng.remove("won't")
+stopwords_eng.remove("but")
+stopwords_eng.remove("aren't")
+stopwords_eng.remove("aren'")
+stopwords_eng.remove("couldn'")
+stopwords_eng.remove("couldn't")
+stopwords_eng.remove("didn'")
+stopwords_eng.remove("didn't")
+stopwords_eng.remove("very")
+
+
 
 imdb = keras.datasets.imdb
 
