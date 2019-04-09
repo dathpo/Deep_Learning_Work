@@ -5,11 +5,9 @@ __author__ = 'Team Alpha'
 import tensorflow as tf
 from tensorflow import keras
 from helper import Helper, arg_parser
-from keras.layers import Dense, Input, LSTM, Embedding, Dropout, Activation, GRU, Flatten, Reshape
-from keras.layers import MaxPooling1D
+from keras.layers import Dense, LSTM, Embedding
 from keras.layers import Conv1D, GlobalMaxPooling1D
-from keras.layers.normalization import BatchNormalization
-from keras.models import Model, Sequential
+from keras.models import Sequential
 from nltk.corpus import stopwords
 from keras import optimizers
 from keras import backend as K
