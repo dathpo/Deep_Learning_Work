@@ -2,20 +2,23 @@ from __future__ import absolute_import, division, print_function
 
 __author__ = 'Team Alpha'
 
+import random as rand
+import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from helper import Helper, arg_parser
-from keras.layers import Dense, Input, LSTM, Embedding, Dropout, Activation, GRU, Flatten
+from keras.layers import Dense, Input, LSTM, Embedding, Dropout, Activation, GRU, Flatten, Reshape
 from keras.layers import MaxPooling1D
 from keras.layers import Conv1D, GlobalMaxPooling1D
-from keras.models import Sequential
+from keras.layers.normalization import BatchNormalization
+from keras.models import Model, Sequential
 from keras.optimizers import SGD
 from nltk.corpus import stopwords
 
 
 class IMDb(Helper):
-    vocab_size = 5000
-    max_len = 512
+    vocab_size = 20000
+    maxlen = 512
 
     def __init__(self, combination, learning_rate, epochs, batches, seed):
         Helper.__init__(self)
@@ -42,7 +45,6 @@ class IMDb(Helper):
                              result.history['val_loss'], result.history['val_acc'], modelname)
         
     def prepare_data(self):
-        tf.set_random_seed(self.seed)
         stopwords_eng = set(stopwords.words("english"))
         stopwords_eng.remove('no')
         stopwords_eng.remove('not')
@@ -98,13 +100,17 @@ class IMDb(Helper):
         return train_data, train_labels, test_data, test_labels
         
     def run_first_combo(self):
+        rand.seed(self.seed)
+        np.random.seed(self.seed)
+        tf.set_random_seed(self.seed)
         model = Sequential()
-
-        model.add(Embedding(self.vocab_size, 1, input_length=self.maxlen))
-        model.add(Conv1D(filters=1, kernel_size=3, padding='same', activation='relu'))
+        model.add(Embedding(self.vocab_size, 200, input_length=self.maxlen))
+        model.add(Conv1D(filters=200, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
-#        model.add(Conv1D(filters=100, kernel_size=3, padding='same', activation='relu'))
-#        model.add(GlobalMaxPooling1D())
+#        model.add(BatchNormalization())
+        model.add(Reshape((self.vocab_size)))
+        model.add(Conv1D(filters=100, kernel_size=3, padding='same', activation='relu'))
+        model.add(GlobalMaxPooling1D())
         model.add(Dense(400, activation='relu'))
 #        model.add(Dense(200, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
@@ -116,14 +122,16 @@ class IMDb(Helper):
         return model
         
     def run_second_combo(self):
-        
+        rand.seed(self.seed)
+        np.random.seed(self.seed)
+        tf.set_random_seed(self.seed)
         model = Sequential()
-        model.add(Embedding(self.vocab_size, 100, input_length=self.maxlen))
+        model.add(Embedding(self.vocab_size, 1, input_length=self.maxlen))
         model.add(Flatten())
-        model.add(Dense(250, activation=tf.nn.relu))
-        model.add(Dense(100, activation=tf.nn.relu))
-        model.add(Dense(50, activation=tf.nn.relu))
-        model.add(Dense(50, activation=tf.nn.relu))
+#        model.add(Dense(250, activation=tf.nn.relu))
+#        model.add(Dense(100, activation=tf.nn.relu))
+#        model.add(Dense(50, activation=tf.nn.relu))
+#        model.add(Dense(50, activation=tf.nn.relu))
         model.add(Dense(1, activation=tf.nn.sigmoid))
 
 #        model.add(Embedding(self.vocab_size, 128))

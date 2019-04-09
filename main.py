@@ -3,7 +3,6 @@ __author__ = 'Team Alpha'
 from imdb import IMDb
 from fashion import Fashion
 
-
 def main(dataset):
     if dataset == 0:
         Fashion(
@@ -13,11 +12,12 @@ def main(dataset):
             batches=128,
             seed=12345
         )
+        
     elif dataset == 1:
         IMDb(
             combination=1,
-            learning_rate=0.05,
-            epochs=1,
+            learning_rate=0.04,
+            epochs=2,
             batches=400,
             seed=12345
         )
