@@ -1,5 +1,6 @@
 logs/
 Graph/
+*.sh
 *.h5
 *.ckpt
 *.save
