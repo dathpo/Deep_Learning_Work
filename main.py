@@ -7,9 +7,9 @@ from fashion import Fashion
 def main(dataset):
     if dataset == 0:
         Fashion(
-            combination=2,
+            combination=1,
             learning_rate=0.001,
-            epochs=1,
+            epochs=80,
             batches=256,
             seed=12345
         )

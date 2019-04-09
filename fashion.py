@@ -39,8 +39,8 @@ class Fashion(Helper):
         # modelname = "fashion-model"
         data = x_train, y_train, x_test, y_test
         result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, modelname)
-        Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
-                             result.history['val_loss'], result.history['val_acc'], modelname)
+        #Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
+        #                     result.history['val_loss'], result.history['val_acc'], modelname)
 
     def prepare_data(self):
         config = tf.ConfigProto(inter_op_parallelism_threads=1)
@@ -92,28 +92,6 @@ class Fashion(Helper):
         model.add(Dense(64, activation='relu'))                                     # Fully Connected Layer
         model.add(BatchNormalization())                                             # Normalization
         model.add(Dense(self.num_classes, activation='softmax'))
-
-        """model = Sequential()
-        model.add(Conv2D(64, kernel_size=(3, 3), strides=(1, 1)))
-        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9))
-        model.add(Activation(activation='relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-        model.add(Dropout(0.3))
-        model.add(Conv2D(64, kernel_size=(3, 3), strides=(1, 1)))
-        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9))
-        model.add(Activation(activation='relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-        model.add(Dropout(0.3))
-        model.add(Flatten())
-        model.add(Dense(256, activation='linear'))
-        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9))
-        model.add(Activation(activation='relu'))
-        model.add(Dropout(0.3))
-        model.add(Dense(64, activation='linear'))
-        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9))
-        model.add(Activation(activation='relu'))
-        model.add(Dropout(0.3))
-        model.add(Dense(10, activation="linear"))"""
 
         adam = keras.optimizers.Adam(lr=self.learning_rate)                         # default lr=0.001
         sgd = keras.optimizers.SGD(lr=self.learning_rate)                           # default lr=0.01
