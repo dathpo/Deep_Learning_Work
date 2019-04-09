@@ -34,12 +34,13 @@ class IMDb(Helper):
         train_data, train_labels, test_data, test_labels = self.prepare_data()
         if combination == 1:
             model = self.run_first_combo()
-            modelname = "imdb_c1_" + str(self.learning_rate) + "_" + str(self.epochs) + "_" + str(self.batches) + "_" + str(self.seed) + ""
+            modelname = "imdb_1_" + str(self.learning_rate) + "_" + str(self.epochs) + "_" + str(self.batches) + "_" + str(self.seed) + ""
         elif combination == 2:
             model = self.run_second_combo()
-            modelname = "imdb_c2_" + str(self.learning_rate) + "_" + str(self.epochs) + "_" + str(self.batches) + "_" + str(self.seed) + ""
+            modelname = "imdb_2_" + str(self.learning_rate) + "_" + str(self.epochs) + "_" + str(self.batches) + "_" + str(self.seed) + ""
         else:
             raise Exception("Please input 1 or 2 for the combination to run")
+        # modelname = "imdb-model"
         data = train_data, train_labels, test_data, test_labels
         result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, modelname)
         Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
