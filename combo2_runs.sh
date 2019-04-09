@@ -19,7 +19,7 @@ unset __conda_setup
 
 conda activate cs985
 
-## [ Final Combinations ]
+## [ Final Runs - Combo 2 ]
 # [ f ]
 #~./fashion.py 2 0.001 60 60 12345
 # [ g ]
@@ -29,25 +29,12 @@ conda activate cs985
 # [ i ]
 #~./fashion.py 2 0.01 20 30 12345
 # [ j ]
-./fashion.py 2 0.1 10 30 12345
+#~./fashion.py 2 0.1 10 30 12345
 
 
-## [ Old Combinations ]
-#~./main_mnist.py 2 0.001 5 30 12345
-# [ g ]
-#~./main_mnist.py 2 0.001 10 60 12345
-# [ h ]
-#~./main_mnist.py 2 0.0001 30 60 12345
-# [ i ]
-#~./main_mnist.py 2 0.0001 30 60 12345
-# [ l ]
-#~./main_mnist.py 2 0.0001 20 60 12345
-# [ m ]
-#~./main_mnist.py 2 0.0001 20 50 12345
-# [ n ]
-#~./main_mnist.py 2 0.0001 30 50 12345
-# [ n ]
-#~./main_mnist.py 2 0.001 60 60 12345
+## [ Combo 1 ]
+
+python main.py
 
 
 ## EOF

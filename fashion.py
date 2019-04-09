@@ -27,6 +27,9 @@ class Fashion(Helper):
         self.run_combination(self.combination)
 
     def run_combination(self, combination):
+        rand.seed(self.seed)
+        np.random.seed(self.seed)
+        tf.set_random_seed(self.seed)
         x_train, y_train, x_test, y_test = self.prepare_data()
         if combination == 1:
             model = self.run_first_combo()
@@ -38,8 +41,8 @@ class Fashion(Helper):
             raise Exception("Please input 1 or 2 for the combination to run")
         data = x_train, y_train, x_test, y_test
         result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, modelname)
-        #Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
-        #                     result.history['val_loss'], result.history['val_acc'], modelname)
+        Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
+                             result.history['val_loss'], result.history['val_acc'], modelname)
 
     def prepare_data(self):
         config = tf.ConfigProto(inter_op_parallelism_threads=1)
@@ -126,18 +129,18 @@ class Fashion(Helper):
     def run_second_combo(self):
        ## Configurations
         # [ f (BEST) ]
-        model = Sequential([
-            Flatten(input_shape=(28, 28)),
-            Dense(500, activation="relu"),
-            Dropout(0.20),
-            Dense(400, activation="relu"),
-            Dropout(0.25),
-            Dense(300, activation="relu"),
-            Dropout(0.30),
-            Dense(200, activation="relu"),
-            Dropout(0.35),
-            Dense(10, activation="softmax")
-            ])
+        #~model = Sequential([
+            #~Flatten(input_shape=(28, 28)),
+            #~Dense(500, activation="relu"),
+            #~Dropout(0.20),
+            #~Dense(400, activation="relu"),
+            #~Dropout(0.25),
+            #~Dense(300, activation="relu"),
+            #~Dropout(0.30),
+            #~Dense(200, activation="relu"),
+            #~Dropout(0.35),
+            #~Dense(10, activation="softmax")
+            #~])
         # [ g ]
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
@@ -157,11 +160,11 @@ class Fashion(Helper):
             #~])
 
         # Optimizer for the three best models
-        model.compile(
-            optimizer="adam",
-            loss="sparse_categorical_crossentropy",
-            metrics=["accuracy"]
-            )
+        #~model.compile(
+            #~optimizer="adam",
+            #~loss="sparse_categorical_crossentropy",
+            #~metrics=["accuracy"]
+            #~)
 
         # [ i ]
         #~model = Sequential([
@@ -170,18 +173,18 @@ class Fashion(Helper):
             #~Dense(10, activation="softmax")
             #~])
         # [ j (WORST ]
-        #~model = Sequential([
-            #~Flatten(input_shape=(28, 28)),
-            #~Dense(32, activation="sigmoid"),
-            #~Dense(10, activation="softmax")
-            #~])
+        model = Sequential([
+            Flatten(input_shape=(28, 28)),
+            Dense(32, activation="sigmoid"),
+            Dense(10, activation="softmax")
+            ])
 
         # Optimizer for the two worst models
-        #~model.compile(
-            #~optimizer="SGD",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
+        model.compile(
+            optimizer="SGD",
+            loss="sparse_categorical_crossentropy",
+            metrics=["accuracy"]
+            )
 
         model.summary()
         return model

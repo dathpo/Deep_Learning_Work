@@ -13,15 +13,16 @@ def main(dataset):
             batches=250,
             seed=12345
         )
+        
     elif dataset == 1:
         IMDb(
             combination=1,
-            learning_rate=0.05,
-            epochs=1,
+            learning_rate=0.04,
+            epochs=2,
             batches=400,
             seed=12345
         )
 
 
 if __name__ == "__main__":
-    main(1)
+    main(0)
