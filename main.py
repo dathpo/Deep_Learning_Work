@@ -7,7 +7,7 @@ from fashion import Fashion
 def main(dataset):
     if dataset == 0:
         Fashion(
-            combination=1,
+            combination=2,
             learning_rate=0.001,
             epochs=1,
             batches=250,
@@ -15,7 +15,7 @@ def main(dataset):
         )
     elif dataset == 1:
         IMDb(
-            combination=2,
+            combination=1,
             learning_rate=0.05,
             epochs=1,
             batches=400,
@@ -24,4 +24,4 @@ def main(dataset):
 
 
 if __name__ == "__main__":
-    main(0)
+    main(1)

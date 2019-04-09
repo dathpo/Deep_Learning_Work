@@ -11,6 +11,9 @@ from keras.layers import Conv1D, GlobalMaxPooling1D
 from keras.models import Sequential
 from keras.optimizers import SGD
 from nltk.corpus import stopwords
+from keras import backend as K
+import numpy as np
+import random as rand
 
 
 class IMDb(Helper):
@@ -42,7 +45,13 @@ class IMDb(Helper):
                              result.history['val_loss'], result.history['val_acc'], modelname)
         
     def prepare_data(self):
+        config = tf.ConfigProto(inter_op_parallelism_threads=1)
+        session = tf.Session(config=config)
+        K.set_session(session)
+        rand.seed(self.seed)
+        np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
+
         stopwords_eng = set(stopwords.words("english"))
         stopwords_eng.remove('no')
         stopwords_eng.remove('not')
@@ -99,7 +108,6 @@ class IMDb(Helper):
         
     def run_first_combo(self):
         model = Sequential()
-
         model.add(Embedding(self.vocab_size, 1, input_length=self.max_len))
         model.add(Conv1D(filters=1, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
@@ -116,7 +124,6 @@ class IMDb(Helper):
         return model
         
     def run_second_combo(self):
-        
         model = Sequential()
         model.add(Embedding(self.vocab_size, 100, input_length=self.max_len))
         model.add(Flatten())
