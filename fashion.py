@@ -119,12 +119,14 @@ class Fashion(Helper):
         sgd = keras.optimizers.SGD(lr=self.learning_rate)                           # default lr=0.01
 
         model.compile(loss='categorical_crossentropy',
-                    optimizer=adam,
-                    metrics=['accuracy'])
+                      optimizer=adam,
+                      metrics=['accuracy'])
         return model
 
     def run_second_combo(self):
-       ## Configurations
+        adam = keras.optimizers.Adam(lr=self.learning_rate)  # default lr=0.001
+        sgd = keras.optimizers.SGD(lr=self.learning_rate)  # default lr=0.01
+        ## Configurations
         # [ f (BEST) ]
         model = Sequential([
             Flatten(input_shape=(28, 28)),
@@ -158,7 +160,7 @@ class Fashion(Helper):
 
         # Optimizer for the three best models
         model.compile(
-            optimizer="adam",
+            optimizer=adam,
             loss="sparse_categorical_crossentropy",
             metrics=["accuracy"]
             )
@@ -178,7 +180,7 @@ class Fashion(Helper):
 
         # Optimizer for the two worst models
         #~model.compile(
-            #~optimizer="SGD",
+            #~optimizer=sgd,
             #~loss="sparse_categorical_crossentropy",
             #~metrics=["accuracy"]
             #~)
