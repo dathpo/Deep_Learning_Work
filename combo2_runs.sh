@@ -21,11 +21,11 @@ conda activate cs985
 
 ## [ Final Runs - Combo 2 ]
 # [ f ]
-#~./fashion.py 2 0.001 60 60 12345
+./fashion.py 2 0.001 60 60 12345
 # [ g ]
 #~./fashion.py 2 0.001 45 50 12345
 # [ h ]
-./fashion.py 2 0.001 30 40 12345
+#~./fashion.py 2 0.001 30 40 12345
 # [ i ]
 #~./fashion.py 2 0.01 20 30 12345
 # [ j ]

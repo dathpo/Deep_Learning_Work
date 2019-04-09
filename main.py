@@ -9,8 +9,8 @@ def main(dataset):
         Fashion(
             combination=2,
             learning_rate=0.001,
-            epochs=1,
-            batches=250,
+            epochs=5,
+            batches=128,
             seed=12345
         )
         
@@ -25,4 +25,4 @@ def main(dataset):
 
 
 if __name__ == "__main__":
-    main(1)
+    main(0)

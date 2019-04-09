@@ -25,10 +25,10 @@ class Helper:
 
     def fit_and_evaluate(self, model, data, batches, epochs, filename):
         x_train, y_train, x_test, y_test = data
-        tb_callback = keras.callbacks.TensorBoard(log_dir='./Graph', histogram_freq=0,
+        tb_callback = keras.callbacks.TensorBoard(log_dir='./logs/Graph', histogram_freq=0,
                                                   write_graph=True, write_images=True)
         tb_callback.set_model(model)
-        csv_logger = CSVLogger(filename=filename+".log", separator=',', append=False)
+        csv_logger = CSVLogger(filename="logs/" + filename + ".log", separator=',', append=False)
         result = model.fit(x_train, y_train,
                            batch_size=batches,
                            epochs=epochs,
@@ -37,12 +37,17 @@ class Helper:
                            callbacks=[tb_callback, csv_logger])
 
         model.save_weights(filename + ".ckpt")
-        model.save(filename + ".h5")
+        # model.save(filename + ".h5")
         # model.load_weights(filename + ".ckpt")                     # .h5 also works
         # model = load_model(filename + ".h5")
 
         validation_acc = np.amax(result.history['val_acc'])
         print('\nBest Validation Accuracy:', validation_acc)
+        print()
+        train_loss = result.history['loss'][-1]
+        train_acc = result.history['acc'][-1]
+        print("Train Loss:", train_loss)
+        print("Train Accuracy:", train_acc)
         print()
         test_loss, test_accuracy = model.evaluate(x_test, y_test)
         print("\nTest Loss:", test_loss)
