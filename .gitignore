@@ -1,3 +1,4 @@
+logs/
 Graph/
 *.h5
 *.ckpt

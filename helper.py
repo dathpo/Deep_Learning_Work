@@ -25,10 +25,11 @@ class Helper:
 
     def fit_and_evaluate(self, model, data, batches, epochs, filename):
         x_train, y_train, x_test, y_test = data
-        tb_callback = keras.callbacks.TensorBoard(log_dir='./logs/Graph', histogram_freq=0,
+        pwd = os.path.abspath(os.path.dirname(__file__))
+        tb_callback = keras.callbacks.TensorBoard(log_dir=pwd + "/logs/", histogram_freq=0,
                                                   write_graph=True, write_images=True)
         tb_callback.set_model(model)
-        csv_logger = CSVLogger(filename="logs/" + filename + ".log", separator=',', append=False)
+        csv_logger = CSVLogger(filename=pwd + "/logs/" + filename + ".log", separator=',', append=False)
         result = model.fit(x_train, y_train,
                            batch_size=batches,
                            epochs=epochs,
@@ -36,7 +37,7 @@ class Helper:
                            validation_split=0.1,
                            callbacks=[tb_callback, csv_logger])
 
-        model.save_weights(filename + ".ckpt")
+        model.save_weights(pwd + "/" + filename + ".ckpt")
         # model.save(filename + ".h5")
         # model.load_weights(filename + ".ckpt")                     # .h5 also works
         # model = load_model(filename + ".h5")
