@@ -130,12 +130,8 @@ class IMDb(Helper):
         
     def run_second_combo(self):
         model = Sequential()
-<<<<<<< HEAD
         model.add(Embedding(self.vocab_size, 1, input_length=self.maxlen))
 
-=======
-        model.add(Embedding(self.vocab_size, 100, input_length=self.maxlen))
->>>>>>> 3a0c395a97ed9266de368bb1c628837c6fb0ea37
         model.add(Flatten())
 #        model.add(Dense(250, activation=tf.nn.relu))
 #        model.add(Dense(100, activation=tf.nn.relu))

@@ -17,11 +17,7 @@ def main(dataset):
     elif dataset == 1:
         IMDb(
             combination=1,
-<<<<<<< HEAD
-            learning_rate=0.05,
-=======
             learning_rate=0.04,
->>>>>>> 3a0c395a97ed9266de368bb1c628837c6fb0ea37
             epochs=2,
             batches=400,
             seed=12345
