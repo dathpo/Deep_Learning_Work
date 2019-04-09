@@ -10,8 +10,8 @@ from keras.layers import MaxPooling1D
 from keras.layers import Conv1D, GlobalMaxPooling1D
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model, Sequential
-from keras.optimizers import SGD
 from nltk.corpus import stopwords
+from keras import optimizers
 from keras import backend as K
 import numpy as np
 import random as rand
@@ -118,12 +118,18 @@ class IMDb(Helper):
         model.add(Embedding(self.vocab_size, 250, input_length=self.maxlen))
         model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
+        # model.add(Dropout(0.5))
         model.add(Dense(400, activation='relu'))
+        # model.add(Dense(250, activation='relu'))
+        # model.add(Dense(100, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
-        
-        model.compile(optimizer='adam',
-                      loss='binary_crossentropy',
+
+        adam = optimizers.Adam(lr=self.learning_rate)
+
+        model.compile(loss='binary_crossentropy',
+                      optimizer=adam,
                       metrics=['acc'])
+
         model.summary()
         return model
         
@@ -138,7 +144,9 @@ class IMDb(Helper):
         model.add(Dense(50, activation=tf.nn.relu))
         model.add(Dense(1, activation=tf.nn.sigmoid))
 
-        model.compile(optimizer='adam',
+        adam = optimizers.Adam(lr=self.learning_rate)
+
+        model.compile(optimizer=adam,
                       loss='binary_crossentropy',
                       metrics=['acc'])
         model.summary()
