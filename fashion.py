@@ -27,9 +27,6 @@ class Fashion(Helper):
         self.run_combination(self.combination)
 
     def run_combination(self, combination):
-        rand.seed(self.seed)
-        np.random.seed(self.seed)
-        tf.set_random_seed(self.seed)
         x_train, y_train, x_test, y_test = self.prepare_data()
         if combination == 1:
             model = self.run_first_combo()
