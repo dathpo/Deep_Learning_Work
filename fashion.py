@@ -121,6 +121,7 @@ class Fashion(Helper):
         model.compile(loss='categorical_crossentropy',
                       optimizer=adam,
                       metrics=['accuracy'])
+        model.summary()
         return model
 
     def run_second_combo(self):
