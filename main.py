@@ -19,7 +19,7 @@ def main(dataset):
             combination=1,
             learning_rate=0.001,
             epochs=2,
-            batches=128,
+            batches=512,
             seed=12345
         )
 

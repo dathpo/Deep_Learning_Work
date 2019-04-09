@@ -112,17 +112,16 @@ class IMDb(Helper):
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
         model = Sequential()
-        model.add(Embedding(self.vocab_size, 225, input_length=self.maxlen))
-        model.add(Conv1D(filters=225, kernel_size=3, padding='same', activation='relu'))
-        model.add(GlobalMaxPooling1D())
-##        model.add(Reshape((self.maxlen, ), input_shape=(self.maxlen)))
-#        model.add(Conv1D(filters=100, kernel_size=3, padding='same', activation='relu'))
+#        model.add(Embedding(self.vocab_size, 210, input_length=self.maxlen))
+#        model.add(Conv1D(filters=210, kernel_size=3, padding='same', activation='relu'))
 #        model.add(GlobalMaxPooling1D())
+#        model.add(Dense(400, activation='relu'))
+#        model.add(Dense(1, activation='sigmoid'))
+        model.add(Embedding(self.vocab_size, 250, input_length=self.maxlen))
+        model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))
+        model.add(GlobalMaxPooling1D())
         model.add(Dense(400, activation='relu'))
-        model.add(Dense(200, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
-
-#        opt = SGD(self.learning_rate)
         
         model.compile(optimizer='adam',
                       loss='binary_crossentropy',
