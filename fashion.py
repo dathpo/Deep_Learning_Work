@@ -8,6 +8,7 @@ import tensorflow as tf
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, BatchNormalization, Activation
+from keras import backend as K
 import numpy as np
 import random as rand
 
@@ -44,6 +45,13 @@ class Fashion(Helper):
                              result.history['val_loss'], result.history['val_acc'], modelname)
 
     def prepare_data(self):
+        config = tf.ConfigProto(inter_op_parallelism_threads=1)
+        session = tf.Session(config=config)
+        K.set_session(session)
+        rand.seed(self.seed)
+        np.random.seed(self.seed)
+        tf.set_random_seed(self.seed)
+
         fashion = tf.keras.datasets.fashion_mnist
         (x_train, y_train), (x_test, y_test) = fashion.load_data()
 
@@ -119,7 +127,7 @@ class Fashion(Helper):
         return model
 
     def run_second_combo(self):
-        ## Configurations
+       ## Configurations
         # [ f (BEST) ]
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
@@ -177,7 +185,6 @@ class Fashion(Helper):
             loss="sparse_categorical_crossentropy",
             metrics=["accuracy"]
             )
-
 
         model.summary()
         return model

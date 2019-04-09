@@ -2,8 +2,6 @@ from __future__ import absolute_import, division, print_function
 
 __author__ = 'Team Alpha'
 
-import random as rand
-import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from helper import Helper, arg_parser
@@ -14,6 +12,9 @@ from keras.layers.normalization import BatchNormalization
 from keras.models import Model, Sequential
 from keras.optimizers import SGD
 from nltk.corpus import stopwords
+from keras import backend as K
+import numpy as np
+import random as rand
 
 
 class IMDb(Helper):
@@ -45,6 +46,13 @@ class IMDb(Helper):
                              result.history['val_loss'], result.history['val_acc'], modelname)
         
     def prepare_data(self):
+        config = tf.ConfigProto(inter_op_parallelism_threads=1)
+        session = tf.Session(config=config)
+        K.set_session(session)
+        rand.seed(self.seed)
+        np.random.seed(self.seed)
+        tf.set_random_seed(self.seed)
+
         stopwords_eng = set(stopwords.words("english"))
         stopwords_eng.remove('no')
         stopwords_eng.remove('not')
@@ -86,16 +94,16 @@ class IMDb(Helper):
                     indexed_words.append(index)
                 processed_reviews.append(indexed_words)
 
-            return(processed_reviews)
+            return processed_reviews
     
         clean_train_data = stopword_removal(train_data)
         clean_test_data = stopword_removal(test_data)
                     
         train_data = keras.preprocessing.sequence.pad_sequences(clean_train_data,
-                                                            maxlen=512)
+                                                            maxlen=self.maxlen)
 
         test_data = keras.preprocessing.sequence.pad_sequences(clean_test_data,
-                                                           maxlen=512)
+                                                           maxlen=self.maxlen)
         
         return train_data, train_labels, test_data, test_labels
         
@@ -121,12 +129,13 @@ class IMDb(Helper):
         return model
         
     def run_second_combo(self):
-        rand.seed(self.seed)
-        np.random.seed(self.seed)
-        tf.set_random_seed(self.seed)
         model = Sequential()
+<<<<<<< HEAD
         model.add(Embedding(self.vocab_size, 1, input_length=self.maxlen))
 
+=======
+        model.add(Embedding(self.vocab_size, 100, input_length=self.maxlen))
+>>>>>>> 3a0c395a97ed9266de368bb1c628837c6fb0ea37
         model.add(Flatten())
 #        model.add(Dense(250, activation=tf.nn.relu))
 #        model.add(Dense(100, activation=tf.nn.relu))
