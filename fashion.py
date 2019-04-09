@@ -128,6 +128,7 @@ class Fashion(Helper):
         sgd = keras.optimizers.SGD(lr=self.learning_rate)  # default lr=0.01
         ## Configurations
         # [ f (BEST) ]
+        # fashion.py 2 0.001 60 60 12345
         model = Sequential([
             Flatten(input_shape=(28, 28)),
             Dense(500, activation="relu"),
@@ -141,6 +142,7 @@ class Fashion(Helper):
             Dense(10, activation="softmax")
             ])
         # [ g ]
+        # fashion.py 2 0.001 45 50 12345
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
             #~Dense(256, activation="relu"),
@@ -150,7 +152,8 @@ class Fashion(Helper):
             #~Dense(64, activation="relu"),
             #~Dense(10, activation="softmax")
             #~])
-       # [ h ]
+        # [ h ]
+        # fashion.py 2 0.001 30 40 12345
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
             #~Dense(128, activation="relu"),
@@ -166,12 +169,14 @@ class Fashion(Helper):
             )
 
         # [ i ]
+        # fashion.py 2 0.01 20 30 12345
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
             #~Dense(64, activation="relu"),
             #~Dense(10, activation="softmax")
             #~])
         # [ j (WORST ]
+        # fashion.py 2 0.1 10 30 12345
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
             #~Dense(32, activation="sigmoid"),
