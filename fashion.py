@@ -139,14 +139,12 @@ class Fashion(Helper):
             #~Dense(128, activation="relu"),
             #~Dense(10, activation="softmax")
             #~])
-
         # Optimizer for the three best models
         model.compile(
             optimizer=adam,
             loss="sparse_categorical_crossentropy",
             metrics=["accuracy"]
             )
-
         # [ i ]
         # fashion.py 2 0.01 20 30 12345
         #~model = Sequential([
@@ -168,7 +166,6 @@ class Fashion(Helper):
             #~loss="sparse_categorical_crossentropy",
             #~metrics=["accuracy"]
             #~)
-
         model.summary()
         return model
 
