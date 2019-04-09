@@ -80,7 +80,7 @@ class Fashion(Helper):
     def run_first_combo(self):
         self.input_shape = (28, 28, 1)
         self.num_classes = 10
-        model = Sequential()
+        """model = Sequential()
         model.add(BatchNormalization(input_shape=self.input_shape))                 # Normalisation
         model.add(Conv2D(64, (4, 4), padding='same', activation='relu'))            # Convolution
         model.add(MaxPooling2D(pool_size=(2, 2)))                                   # Max Pooling
@@ -93,29 +93,29 @@ class Fashion(Helper):
         model.add(Dropout(0.5))                                                     # Dropout
         model.add(Dense(64, activation='relu'))                                     # Fully Connected Layer
         model.add(BatchNormalization())                                             # Normalization
-        model.add(Dense(self.num_classes, activation='softmax'))
+        model.add(Dense(self.num_classes, activation='softmax'))"""
 
-        """model = Sequential()
+        model = Sequential()
         model.add(Conv2D(64, kernel_size=(3, 3), strides=(1, 1)))
-        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9, fix_gamma=False))
+        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9))
         model.add(Activation(activation='relu'))
-        model.add(MaxPooling2D(size=(2, 2), strides=(2, 2), padding=(0, 0), ceil_mode=False))
-        model.add(Dropout(p=0.3))
-        model.add(Conv2D(64, kernel_size=(3, 3), stride=(1, 1)))
-        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9, fix_gamma=False))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(Conv2D(64, kernel_size=(3, 3), strides=(1, 1)))
+        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9))
         model.add(Activation(activation='relu'))
-        model.add(MaxPooling2D(size=(2, 2), strides=(2, 2), padding=(0, 0), ceil_mode=False))
-        model.add(Dropout(p=0.3))
-        model.add(Flatten)
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+        model.add(Dropout(0.3))
+        model.add(Flatten())
         model.add(Dense(256, activation='linear'))
-        model.add(BatchNormalization(axis=1, eps=1e-05, momentum=0.9, fix_gamma=False))
+        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9))
         model.add(Activation(activation='relu'))
-        model.add(Dropout(p=0.3))
+        model.add(Dropout(0.3))
         model.add(Dense(64, activation='linear'))
-        model.add(BatchNormalization(axis=1, eps=1e-05, momentum=0.9, fix_gamma=False))
+        model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9))
         model.add(Activation(activation='relu'))
-        model.add(Dropout(p=0.3))
-        model.add(Dense(10, activation="linear"))"""
+        model.add(Dropout(0.3))
+        model.add(Dense(10, activation="linear"))
 
         adam = keras.optimizers.Adam(lr=self.learning_rate)                         # default lr=0.001
         sgd = keras.optimizers.SGD(lr=self.learning_rate)                           # default lr=0.01
@@ -123,7 +123,6 @@ class Fashion(Helper):
         model.compile(loss='categorical_crossentropy',
                     optimizer=adam,
                     metrics=['accuracy'])
-        model.summary()
         return model
 
     def run_second_combo(self):
