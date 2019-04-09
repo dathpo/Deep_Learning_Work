@@ -54,8 +54,8 @@ class IMDb(Helper):
         rand.seed(self.seed)
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
-        nltk.download('stopwords')
 
+        nltk.download('stopwords')
         stopwords_eng = set(stopwords.words("english"))
         stopwords_eng.remove('no')
         stopwords_eng.remove('not')
@@ -111,9 +111,6 @@ class IMDb(Helper):
         return train_data, train_labels, test_data, test_labels
         
     def run_first_combo(self):
-        rand.seed(self.seed)
-        np.random.seed(self.seed)
-        tf.set_random_seed(self.seed)
         model = Sequential()
         model.add(Embedding(self.vocab_size, 250, input_length=self.maxlen))
         model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))
