@@ -15,6 +15,7 @@ from nltk.corpus import stopwords
 from keras import backend as K
 import numpy as np
 import random as rand
+import nltk
 
 
 class IMDb(Helper):
@@ -53,6 +54,7 @@ class IMDb(Helper):
         rand.seed(self.seed)
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
+        nltk.download('stopwords')
 
         stopwords_eng = set(stopwords.words("english"))
         stopwords_eng.remove('no')

@@ -18,11 +18,11 @@ def main(dataset):
         IMDb(
             combination=1,
             learning_rate=0.001,
-            epochs=2,
+            epochs=80,
             batches=512,
             seed=12345
         )
 
 
 if __name__ == "__main__":
-    main(0)
+    main(1)
