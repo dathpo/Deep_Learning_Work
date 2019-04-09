@@ -104,12 +104,18 @@ class IMDb(Helper):
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
         model = Sequential()
+<<<<<<< HEAD
         model.add(Embedding(self.vocab_size, 200, input_length=self.maxlen))
         model.add(Conv1D(filters=200, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
 #        model.add(BatchNormalization())
         model.add(Reshape((self.vocab_size)))
         model.add(Conv1D(filters=100, kernel_size=3, padding='same', activation='relu'))
+=======
+
+        model.add(Embedding(self.vocab_size, 1, input_length=self.max_len))
+        model.add(Conv1D(filters=1, kernel_size=3, padding='same', activation='relu'))
+>>>>>>> a10f1d5784e886ceedd67f6b563c223d1d449207
         model.add(GlobalMaxPooling1D())
         model.add(Dense(400, activation='relu'))
 #        model.add(Dense(200, activation='relu'))
@@ -126,7 +132,11 @@ class IMDb(Helper):
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
         model = Sequential()
+<<<<<<< HEAD
         model.add(Embedding(self.vocab_size, 1, input_length=self.maxlen))
+=======
+        model.add(Embedding(self.vocab_size, 100, input_length=self.max_len))
+>>>>>>> a10f1d5784e886ceedd67f6b563c223d1d449207
         model.add(Flatten())
 #        model.add(Dense(250, activation=tf.nn.relu))
 #        model.add(Dense(100, activation=tf.nn.relu))
@@ -146,6 +156,7 @@ class IMDb(Helper):
                       metrics=['acc'])
         model.summary()
         return model
+
 
 if __name__ == "__main__":
     args = arg_parser()

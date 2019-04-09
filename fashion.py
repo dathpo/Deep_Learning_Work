@@ -26,6 +26,9 @@ class Fashion(Helper):
         self.run_combination(self.combination)
 
     def run_combination(self, combination):
+        rand.seed(self.seed)
+        np.random.seed(self.seed)
+        tf.set_random_seed(self.seed)
         x_train, y_train, x_test, y_test = self.prepare_data()
         if combination == 1:
             model = self.run_first_combo()
@@ -41,9 +44,6 @@ class Fashion(Helper):
                              result.history['val_loss'], result.history['val_acc'], modelname)
 
     def prepare_data(self):
-        rand.seed(self.seed)
-        np.random.seed(self.seed)
-        tf.set_random_seed(self.seed)
         fashion = tf.keras.datasets.fashion_mnist
         (x_train, y_train), (x_test, y_test) = fashion.load_data()
 
@@ -72,7 +72,7 @@ class Fashion(Helper):
     def run_first_combo(self):
         self.input_shape = (28, 28, 1)
         self.num_classes = 10
-        """model = Sequential()
+        model = Sequential()
         model.add(BatchNormalization(input_shape=self.input_shape))                 # Normalisation
         model.add(Conv2D(64, (4, 4), padding='same', activation='relu'))            # Convolution
         model.add(MaxPooling2D(pool_size=(2, 2)))                                   # Max Pooling
@@ -85,9 +85,9 @@ class Fashion(Helper):
         model.add(Dropout(0.5))                                                     # Dropout
         model.add(Dense(64, activation='relu'))                                     # Fully Connected Layer
         model.add(BatchNormalization())                                             # Normalization
-        model.add(Dense(self.num_classes, activation='softmax'))"""
+        model.add(Dense(self.num_classes, activation='softmax'))
 
-        model = Sequential()
+        """model = Sequential()
         model.add(Conv2D(64, kernel_size=(3, 3), strides=(1, 1)))
         model.add(BatchNormalization(axis=1, epsilon=1e-05, momentum=0.9, fix_gamma=False))
         model.add(Activation(activation='relu'))
@@ -107,7 +107,7 @@ class Fashion(Helper):
         model.add(BatchNormalization(axis=1, eps=1e-05, momentum=0.9, fix_gamma=False))
         model.add(Activation(activation='relu'))
         model.add(Dropout(p=0.3))
-        model.add(Dense(10, activation="linear"))
+        model.add(Dense(10, activation="linear"))"""
 
         adam = keras.optimizers.Adam(lr=self.learning_rate)                         # default lr=0.001
         sgd = keras.optimizers.SGD(lr=self.learning_rate)                           # default lr=0.01
@@ -121,18 +121,18 @@ class Fashion(Helper):
     def run_second_combo(self):
         ## Configurations
         # [ f (BEST) ]
-        model = Sequential([
-            Flatten(input_shape=(28, 28)),
-            Dense(500, activation="relu"),
-            Dropout(0.20),
-            Dense(400, activation="relu"),
-            Dropout(0.25),
-            Dense(300, activation="relu"),
-            Dropout(0.30),
-            Dense(200, activation="relu"),
-            Dropout(0.35),
-            Dense(10, activation="softmax")
-            ])
+        #~model = Sequential([
+            #~Flatten(input_shape=(28, 28)),
+            #~Dense(500, activation="relu"),
+            #~Dropout(0.20),
+            #~Dense(400, activation="relu"),
+            #~Dropout(0.25),
+            #~Dense(300, activation="relu"),
+            #~Dropout(0.30),
+            #~Dense(200, activation="relu"),
+            #~Dropout(0.35),
+            #~Dense(10, activation="softmax")
+            #~])
         # [ g ]
         #~model = Sequential([
             #~Flatten(input_shape=(28, 28)),
@@ -152,11 +152,11 @@ class Fashion(Helper):
             #~])
 
         # Optimizer for the three best models
-        model.compile(
-            optimizer="adam",
-            loss="sparse_categorical_crossentropy",
-            metrics=["accuracy"]
-            )
+        #~model.compile(
+            #~optimizer="adam",
+            #~loss="sparse_categorical_crossentropy",
+            #~metrics=["accuracy"]
+            #~)
 
         # [ i ]
         #~model = Sequential([
@@ -165,18 +165,18 @@ class Fashion(Helper):
             #~Dense(10, activation="softmax")
             #~])
         # [ j (WORST ]
-        #~model = Sequential([
-            #~Flatten(input_shape=(28, 28)),
-            #~Dense(32, activation="sigmoid"),
-            #~Dense(10, activation="softmax")
-            #~])
+        model = Sequential([
+            Flatten(input_shape=(28, 28)),
+            Dense(32, activation="sigmoid"),
+            Dense(10, activation="softmax")
+            ])
 
         # Optimizer for the two worst models
-        #~model.compile(
-            #~optimizer="SGD",
-            #~loss="sparse_categorical_crossentropy",
-            #~metrics=["accuracy"]
-            #~)
+        model.compile(
+            optimizer="SGD",
+            loss="sparse_categorical_crossentropy",
+            metrics=["accuracy"]
+            )
 
 
         model.summary()
