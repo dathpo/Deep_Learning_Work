@@ -74,7 +74,7 @@ class Fashion(Helper):
         self.num_classes = 10
         model = Sequential()
         model.add(BatchNormalization(input_shape=self.input_shape))                 # Normalisation
-        model.add(Conv2D(1, (4, 4), padding='same', activation='relu'))            # Convolution
+        model.add(Conv2D(64, (4, 4), padding='same', activation='relu'))            # Convolution
         model.add(MaxPooling2D(pool_size=(2, 2)))                                   # Max Pooling
         model.add(Dropout(0.1))                                                     # Dropout
         model.add(Conv2D(64, (4, 4), activation='relu'))                            # Convolution
