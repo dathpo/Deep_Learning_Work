@@ -7,7 +7,7 @@ from helper import Helper, arg_parser
 import tensorflow as tf
 import keras
 from keras.models import Sequential
-from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, BatchNormalization, Activation
+from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D, BatchNormalization
 from keras import backend as K
 import numpy as np
 import random as rand
@@ -36,7 +36,7 @@ class Fashion(Helper):
             modelname = "fashion_2_" + str(self.learning_rate) + "_" + str(self.epochs) + "_" + str(self.batches) + "_" + str(self.seed) + ""
         else:
             raise Exception("Please input 1 or 2 for the combination to run")
-        # modelname = "fashion-model"
+        modelname = "fashion-model"
         data = x_train, y_train, x_test, y_test
         result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, modelname)
         #Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
