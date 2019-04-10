@@ -25,4 +25,4 @@ def main(dataset):
 
 
 if __name__ == "__main__":
-    main(1)
+    main(0)

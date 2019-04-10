@@ -113,7 +113,7 @@ class IMDb(Helper):
         model.add(Embedding(self.vocab_size, 250, input_length=self.maxlen))                  # 250 -> 50 for Example o
         model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))      # 250 -> 50 for Example o
         model.add(GlobalMaxPooling1D())
-        # model.add(Dropout(0.5))                               # Unhash this Example n
+        # model.add(Dropout(0.5))                               # Unhash for Example n
         model.add(Dense(400, activation='relu'))
         # model.add(Dense(250, activation='relu'))              # Unhash for Example l
         # model.add(Dense(100, activation='relu'))              # Unhash for Example l
