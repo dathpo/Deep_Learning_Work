@@ -38,9 +38,9 @@ class Helper:
                            callbacks=[tb_callback, csv_logger])
 
         model.save_weights(pwd + "/" + filename + ".ckpt")
-        # model.save(filename + ".h5")
-        # model.load_weights(filename + ".ckpt")                     # .h5 also works
-        # model = load_model(filename + ".h5")
+        model.save(pwd + "/" + filename + ".h5")
+        # model.load_weights(pwd + "/" + filename + ".ckpt")                     # .h5 also works
+        # model = load_model(pwd + "/" + filename + ".h5")
 
         validation_acc = np.amax(result.history['val_acc'])
         print('\nBest Validation Accuracy:', validation_acc)

@@ -5,11 +5,9 @@ __author__ = 'Team Alpha'
 import tensorflow as tf
 from tensorflow import keras
 from helper import Helper, arg_parser
-from keras.layers import Dense, Input, LSTM, Embedding, Dropout, Activation, GRU, Flatten, Reshape
-from keras.layers import MaxPooling1D
+from keras.layers import Dense, LSTM, Embedding, Flatten
 from keras.layers import Conv1D, GlobalMaxPooling1D
-from keras.layers.normalization import BatchNormalization
-from keras.models import Model, Sequential
+from keras.models import Sequential
 from nltk.corpus import stopwords
 from keras import optimizers
 from keras import backend as K
@@ -41,11 +39,11 @@ class IMDb(Helper):
             modelname = "imdb_2_" + str(self.learning_rate) + "_" + str(self.epochs) + "_" + str(self.batches) + "_" + str(self.seed) + ""
         else:
             raise Exception("Please input 1 or 2 for the combination to run")
-        # modelname = "imdb-model"
+        modelname = "imdb-model"
         data = train_data, train_labels, test_data, test_labels
         result = Helper.fit_and_evaluate(self, model, data, self.batches, self.epochs, modelname)
-        Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
-                             result.history['val_loss'], result.history['val_acc'], modelname)
+        #Helper.plot_loss_acc(self, result.epoch, result.history['loss'], result.history['acc'],
+        #                     result.history['val_loss'], result.history['val_acc'], modelname)
         
     def prepare_data(self):
         config = tf.ConfigProto(inter_op_parallelism_threads=1)
@@ -115,10 +113,10 @@ class IMDb(Helper):
         model.add(Embedding(self.vocab_size, 200, input_length=self.maxlen))
         model.add(Conv1D(filters=200, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
-        # model.add(Dropout(0.5))
+        # model.add(Dropout(0.5))                               # Example n
         model.add(Dense(400, activation='relu'))
-        model.add(Dense(250, activation='relu'))
-        model.add(Dense(100, activation='relu'))
+        # model.add(Dense(250, activation='relu'))              # Example l
+        # model.add(Dense(100, activation='relu'))              # Example
         model.add(Dense(1, activation='sigmoid'))
 
         adam = optimizers.Adam(lr=self.learning_rate)
