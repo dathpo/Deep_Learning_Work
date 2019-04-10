@@ -112,13 +112,13 @@ class IMDb(Helper):
         
     def run_first_combo(self):
         model = Sequential()
-        model.add(Embedding(self.vocab_size, 250, input_length=self.maxlen))
-        model.add(Conv1D(filters=250, kernel_size=3, padding='same', activation='relu'))
+        model.add(Embedding(self.vocab_size, 200, input_length=self.maxlen))
+        model.add(Conv1D(filters=200, kernel_size=3, padding='same', activation='relu'))
         model.add(GlobalMaxPooling1D())
         # model.add(Dropout(0.5))
         model.add(Dense(400, activation='relu'))
-        # model.add(Dense(250, activation='relu'))
-        # model.add(Dense(100, activation='relu'))
+        model.add(Dense(250, activation='relu'))
+        model.add(Dense(100, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
 
         adam = optimizers.Adam(lr=self.learning_rate)
@@ -132,12 +132,15 @@ class IMDb(Helper):
         
     def run_second_combo(self):
         model = Sequential()
-        model.add(Embedding(self.vocab_size, 200, input_length=self.maxlen))
-        model.add(LSTM(128, dropout=0.02, recurrent_dropout=0.02))
-#        model.add(Flatten())
-#        model.add(Dense(250, activation=tf.nn.relu))
-#        model.add(Dense(100, activation=tf.nn.relu))
-#        model.add(Dense(50, activation=tf.nn.relu))
+        model.add(Embedding(self.vocab_size, 100, input_length=self.maxlen))
+        # model.add(LSTM(128, dropout=0.02, recurrent_dropout=0.02))
+        model.add(Flatten())
+
+        # model.add(Dense(250, activation=tf.nn.relu))
+# #        model.add(Dense(100, activation=tf.nn.relu))
+# #        model.add(Dense(50, activation=tf.nn.relu))
+        model.add(Dense(250, activation=tf.nn.relu))
+        model.add(Dense(100, activation=tf.nn.relu))
         model.add(Dense(50, activation=tf.nn.relu))
         model.add(Dense(1, activation=tf.nn.sigmoid))
 
